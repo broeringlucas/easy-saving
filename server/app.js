@@ -1,0 +1,45 @@
+const db = require("./db.js");
+const express = require("express");
+const users = require("./routes/users");
+const transactions = require("./routes/transactions");
+const categories = require("./routes/categories");
+
+const cors = require("cors");
+require("dotenv").config();
+
+const port = process.env.PORT;
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+// routes
+app.use("/users", users);
+app.use("/transactions", transactions);
+app.use("/categories", categories);
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+// db.sync()
+//   .then(() => {
+//     const user = require("./models/user");
+//     const transaction = require("./models/transaction");
+//     const category = require("./models/category");
+
+//     console.log("Database synced");
+//   })
+//   .catch((err) => {
+//     console.error("Error syncing database:", err);
+//   });
+
+// db.sync({ force: true }).then(() => {
+//   console.log("Database synced");
+// });
+
+// Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
