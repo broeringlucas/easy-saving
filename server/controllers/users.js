@@ -1,6 +1,7 @@
 const db = require("../models/user.js");
 const bcrypt = require("bcryptjs");
 const jwtHelper = require("../utils/jwtHelper.js");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 // register new user
@@ -17,11 +18,10 @@ const signupUser = async (req, res) => {
     });
 
     if (userEmail) {
-      return res.status(400).send({ message: "Email already exists" });
+      return res.status(400).send({ message: "Invalid credentials" });
     }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.create({
       username: username,
@@ -55,9 +55,13 @@ const signinUser = async (req, res) => {
     // Generate token
     const token = jwtHelper.generateToken({ id: user.user_id });
 
-    return res.status(200).send({
-      accessToken: token,
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
     });
+
+    return res.status(200).send({ message: "Login successful" });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
@@ -70,6 +74,11 @@ const allUsers = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
+};
+
+const logoutUser = (req, res) => {
+  res.clearCookie("token");
+  return res.status(200).send({ message: "Logout successful" });
 };
 
 module.exports = { signupUser, signinUser, allUsers };
