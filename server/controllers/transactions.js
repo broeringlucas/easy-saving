@@ -1,16 +1,19 @@
 const db = require("../models/transaction.js");
+const category = require("../models/category.js");
 const { format } = require("date-fns");
+const Category = require("../models/category.js");
 
-// Get all transactions
 const getTransactions = async (req, res) => {
   try {
-    const transactions = await db.findAll();
+    const transactions = await db.findAll({
+      include: Category,
+    });
+
     return res.status(200).send(transactions);
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
 };
-
 // Get transaction by id
 const getTransactionById = async (req, res) => {
   try {
@@ -29,20 +32,12 @@ const getTransactionById = async (req, res) => {
 const createTransaction = async (req, res) => {
   try {
     const { amount, description, category, user, type } = req.body;
-    const currentDate = new Date();
-
-    const formattedDate = format(currentDate, "yyyy-MM-dd");
-    const formattedTime = format(currentDate, "HH:mm:ss");
-
-    console.log(formattedDate);
 
     await db.create({
       amount: amount,
       description: description,
       category_id: category,
       user_id: user,
-      date: formattedDate,
-      time: formattedTime,
       type: type,
     });
     return res
