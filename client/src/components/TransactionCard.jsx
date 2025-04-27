@@ -7,16 +7,13 @@ const TransactionCard = ({ transaction, onDelete }) => {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
     });
   };
 
   return (
-    <div className="relative flex items-center p-4 bg-white rounded-lg shadow-md max-w-md hover:bg-gray-100 transition-all group">
+    <div className="relative flex items-center p-4 bg-white rounded-lg shadow-md max-w-x1 hover:bg-gray-100 transition-all group mb-1">
       <div
-        className="w-6 h-6 rounded-full flex-shrink-0"
+        className="w-10 h-10 rounded-full flex-shrink-0"
         style={{ backgroundColor: transaction.category?.color }}
       ></div>
       <div className="flex flex-col flex-1 ml-4">
@@ -31,7 +28,9 @@ const TransactionCard = ({ transaction, onDelete }) => {
           </p>
         </div>
         <div className="flex items-center justify-between gap-x-4 text-sm text-gray-600">
-          <p>{transaction.category?.name}</p>
+          <p className="text-sm" style={{ color: transaction.category?.color }}>
+            {transaction.category?.name}
+          </p>
           <p className="text-xs text-gray-400">
             {formatDate(transaction.timestamp)}
           </p>

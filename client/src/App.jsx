@@ -1,19 +1,41 @@
-import React from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar2";
 import Signup from "./components/Signup";
 import Signin from "./components/Signin";
-import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+function Layout() {
+  const location = useLocation();
+
+  const hideNavbarRoutes = ["/signin", "/signup"];
+  const shouldHideNavbar = hideNavbarRoutes.includes(
+    location.pathname.toLowerCase()
+  );
+
+  return (
+    <>
+      {!shouldHideNavbar && <Navbar />}
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route exact path="/Signup" element={<Signup />} />
-        <Route exact path="/Signin" element={<Signin />} />
-        <Route exact path="/" element={<Dashboard />} />
-      </Routes>
+      <Layout />
     </BrowserRouter>
   );
 }

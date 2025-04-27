@@ -49,7 +49,7 @@ const signinUser = async (req, res) => {
     // Verify password
     const passwordIsValid = bcrypt.compareSync(password, user.password);
     if (!passwordIsValid) {
-      return res.status(401).send({ message: "Invalid password" });
+      return res.status(401).send({ message: "Invalid credentials" });
     }
 
     // Generate token
@@ -67,6 +67,17 @@ const signinUser = async (req, res) => {
   }
 };
 
+const user = async (req, res) => {
+  const user = await db.findByPk(req.userId);
+  if (!user) return res.status(404).send({ message: "User not found" });
+
+  res.status(200).send({
+    user_id: user.user_id,
+    username: user.username,
+    email: user.email,
+  });
+};
+
 const allUsers = async (req, res) => {
   try {
     const users = await db.findAll();
@@ -81,4 +92,4 @@ const logoutUser = (req, res) => {
   return res.status(200).send({ message: "Logout successful" });
 };
 
-module.exports = { signupUser, signinUser, allUsers };
+module.exports = { signupUser, signinUser, allUsers, user, logoutUser };

@@ -31,7 +31,7 @@ const Transaction = db.define(
       validate: {
         isIn: [[0, 1]],
       },
-      comment: "0: despesa, 1: receita",
+      comment: "0: expense, 1: income",
     },
   },
   { timestamps: false }

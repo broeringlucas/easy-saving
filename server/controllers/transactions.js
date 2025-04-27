@@ -1,6 +1,4 @@
 const db = require("../models/transaction.js");
-const category = require("../models/category.js");
-const { format } = require("date-fns");
 const Category = require("../models/category.js");
 
 const getTransactions = async (req, res) => {
@@ -14,7 +12,23 @@ const getTransactions = async (req, res) => {
     return res.status(500).send({ message: error.message });
   }
 };
-// Get transaction by id
+
+const getTransactionsByUser = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const transactions = await db.findAll({
+      where: {
+        user_id: user_id,
+      },
+      include: Category,
+    });
+
+    return res.status(200).send(transactions);
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 const getTransactionById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,6 +103,7 @@ const deleteTransaction = async (req, res) => {
 module.exports = {
   getTransactions,
   getTransactionById,
+  getTransactionsByUser,
   createTransaction,
   updateTransaction,
   deleteTransaction,

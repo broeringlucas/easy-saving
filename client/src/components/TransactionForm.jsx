@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 
-const TransactionForm = ({ onTransactionAdded }) => {
+const TransactionForm = ({ onTransactionAdded, user }) => {
   const [transaction, setTransaction] = useState({
     amount: 0,
     description: "",
     category: 0,
-    user: 0,
+    user: user.user_id,
     type: 0,
   });
   const [categories, setCategories] = useState([]);
@@ -82,16 +82,6 @@ const TransactionForm = ({ onTransactionAdded }) => {
           <option value="0">Despesa</option>
           <option value="1">Receita</option>
         </select>
-      </div>
-      <div className="form-group">
-        <label>Usuário:</label>
-        <input
-          type="number"
-          name="user"
-          value={transaction.user}
-          onChange={handleChange}
-          required
-        />
       </div>
       <div className="form-group">
         <label>Categoria:</label>

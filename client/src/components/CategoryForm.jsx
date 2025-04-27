@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api";
 
-const CategoryForm = () => {
+const CategoryForm = ({ onCategoryAdded }) => {
   const [category, setCategory] = useState({ name: "", color: "#000000" });
 
   const handleChange = (e) => {
@@ -12,12 +12,13 @@ const CategoryForm = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post("/categories", {
+      await api.post("/categories", {
         name: category.name,
         color: category.color,
       });
 
       setCategory({ name: "", color: "#000000" });
+      onCategoryAdded();
     } catch (error) {
       console.error(error);
       alert("Erro ao criar categoria");

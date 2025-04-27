@@ -10,6 +10,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   const decoded = jwtHelper.verifyToken(token);
+  req.userId = decoded.id;
   if (!decoded) {
     return res.status(403).send({ message: "Forbidden - Invalid token" });
   }

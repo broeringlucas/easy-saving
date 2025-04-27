@@ -1,32 +1,27 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+// components/Navbar.jsx
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <NavLink className="navbar-brand" to="/">
-        <h1>Logo</h1>
-      </NavLink>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/Signup">
-              Signup
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/Signin">
-              Signin
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/Message">
-              Message
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <div className="w-64 h-screen bg-gray-800 text-white p-6">
+      <h2 className="text-xl font-bold mb-4">FinanceTrack</h2>
+      <ul>
+        <li className="mb-3">
+          <a href="/" className="hover:text-gray-400">
+            Dashboard
+          </a>
+        </li>
+        {/* <li className="mb-3">
+          <a href="/transactions" className="hover:text-gray-400">
+            Transações
+          </a>
+        </li> */}
+        <li className="mb-3">
+          <a href="/settings" className="hover:text-gray-400">
+            Configurações
+          </a>
+        </li>
+      </ul>
+    </div>
   );
 };
 
