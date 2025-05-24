@@ -12,7 +12,7 @@ const port = process.env.PORT;
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "http://localhost:8080",
   credentials: true,
 };
 
@@ -33,20 +33,8 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// db.sync()
-//   .then(() => {
-//     const user = require("./models/user");
-//     const transaction = require("./models/transaction");
-//     const category = require("./models/category");
-
-//     console.log("Database synced");
-//   })
-//   .catch((err) => {
-//     console.error("Error syncing database:", err);
-//   });
+// Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
 
 // db.sync({ force: true }).then(() => {
 //   console.log("Database synced");
 // });
-
-// Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo

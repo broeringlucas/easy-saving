@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   signupUser,
   signinUser,
+  logoutUser,
   allUsers,
   user,
 } = require("../controllers/users");
@@ -10,6 +11,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/signup", signupUser);
 router.post("/signin", signinUser);
+router.post("/logout", logoutUser);
 router.get("/", allUsers);
 router.get("/user", authMiddleware, user);
 

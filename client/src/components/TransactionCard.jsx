@@ -11,27 +11,34 @@ const TransactionCard = ({ transaction, onDelete }) => {
   };
 
   return (
-    <div className="relative flex items-center p-4 bg-white rounded-lg shadow-md max-w-x1 hover:bg-gray-100 transition-all group mb-1">
-      <div
-        className="w-10 h-10 rounded-full flex-shrink-0"
-        style={{ backgroundColor: transaction.category?.color }}
-      ></div>
-      <div className="flex flex-col flex-1 ml-4">
-        <div className="flex items-center justify-between gap-x-4">
-          <p className="text-lg font-bold">{transaction.description}</p>
+    <div
+      className={`relative flex items-center p-6 bg-white rounded-lg shadow-md w-full mx-auto max-w-6xl hover:bg-gray-100 transition-all group mb-3 border-l-[6px] min-h-[100px]`}
+      style={{ borderLeftColor: transaction.category?.color }}
+    >
+      <div className="flex flex-1 w-full items-center">
+        <div className="w-[20%] pr-4">
           <p
-            className={`text-sm font-semibold ${
+            className="text-[23px] font-bold truncate"
+            style={{ color: transaction.category?.color }}
+          >
+            {transaction.category?.name}
+          </p>
+        </div>
+        <div className="w-[40%] pr-4">
+          <p className="text-[18px] truncate">{transaction.description}</p>
+        </div>
+        <div className="w-[20%] pr-4">
+          <p
+            className={`text-[18px] font-semibold ${
               transaction.type === 0 ? "text-red-500" : "text-green-500"
             }`}
           >
-            R$ {transaction.amount}
+            {transaction.type === 0 ? "-" : "+"} R$
+            {Math.abs(transaction.amount).toFixed(2)}
           </p>
         </div>
-        <div className="flex items-center justify-between gap-x-4 text-sm text-gray-600">
-          <p className="text-sm" style={{ color: transaction.category?.color }}>
-            {transaction.category?.name}
-          </p>
-          <p className="text-xs text-gray-400">
+        <div className="w-[20%] text-right pr-4">
+          <p className="text-[15px] text-black">
             {formatDate(transaction.timestamp)}
           </p>
         </div>

@@ -10,6 +10,20 @@ const getCategories = async (req, res) => {
   }
 };
 
+const getCategoriesByUser = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const categories = await db.findAll({
+      where: {
+        user_id: user_id,
+      },
+    });
+    return res.status(200).send(categories);
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 // Get category by id
 const getCategoryById = async (req, res) => {
   try {
@@ -27,10 +41,11 @@ const getCategoryById = async (req, res) => {
 // Create new category
 const createCategory = async (req, res) => {
   try {
-    const { name, color } = req.body;
+    const { name, color, user } = req.body;
     await db.create({
-      name: name,
+      name: name.toLowerCase(),
       color: color,
+      user_id: user,
     });
     return res.status(201).send({ message: "Category created successfully" });
   } catch (error) {
@@ -72,10 +87,27 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+const getCategoriesByUserAndName = async (req, res) => {
+  const { user_id, name } = req.params;
+  try {
+    const categories = await db.findAll({
+      where: {
+        user_id: user_id,
+        name: name.toLowerCase(),
+      },
+    });
+    return res.status(200).send(categories);
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   getCategories,
   getCategoryById,
+  getCategoriesByUser,
   createCategory,
   updateCategory,
   deleteCategory,
+  getCategoriesByUserAndName,
 };

@@ -15,7 +15,7 @@ const Signin = () => {
         email,
         password,
       });
-      navigate("/Message");
+      navigate("/home");
     } catch (error) {
       console.error("Authentication failed:", error);
       setMessage(error.response?.data?.message || "An error occurred");

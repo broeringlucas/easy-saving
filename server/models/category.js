@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const User = require("./user");
 const db = require("../db.js");
 
 const Category = db.define("category", {
@@ -15,6 +16,12 @@ const Category = db.define("category", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+});
+
+Category.belongsTo(User, {
+  constraints: true,
+  foreignKey: "user_id",
+  allowNull: false,
 });
 
 module.exports = Category;

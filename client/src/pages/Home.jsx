@@ -4,10 +4,8 @@ import TransactionCard from "../components/TransactionCard";
 import TransactionForm from "../components/TransactionForm";
 import FormModal from "../components/FormModal";
 import CategoryForm from "../components/CategoryForm";
-import Navbar2 from "../components/Navbar2";
-import { use } from "react";
 
-const Dashboard = () => {
+const Home = () => {
   const [transactions, setTransactions] = useState([]);
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
@@ -58,28 +56,42 @@ const Dashboard = () => {
 
   const balance = incomeTotal - expenseTotal;
 
-  console.log("Transactions:", transactions);
-
   return (
     <div>
-      <div className="flex justify-center space-x-4 mt-20 mb-10">
-        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left ">
-          <p className="text-sm font-semibold">Income</p>
-          <p className="text-2xl font-bold">
+      <div className="flex justify-center space-x-4 mt-10 mb-10 h-20">
+        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#2ecc71]">
+          <p className="text-[15px] font-semibold mb-1">Income</p>
+          <p className="text-[30px] font-bold text-[#2ecc71]">
             {incomeTotal > 0 ? `+${incomeTotal}` : incomeTotal}
           </p>
         </div>
 
-        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left">
-          <p className="text-sm font-semibold">Expense</p>
-          <p className="text-2xl font-bold">
+        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#e74c3c]">
+          <p className="text-[15px] font-semibold mb-1">Expense</p>
+          <p className="text-[30px] font-bold text-[#e74c3c]">
             {expenseTotal > 0 ? `-${expenseTotal}` : expenseTotal}
           </p>
         </div>
 
-        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left">
-          <p className="text-sm font-semibold">Balance</p>
-          <p className="text-2xl font-bold">
+        <div
+          className={`py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 ${
+            balance > 0
+              ? "border-[#2ecc71]"
+              : balance < 0
+              ? "border-[#e74c3c]"
+              : "border-[#34495e]"
+          }`}
+        >
+          <p className="text-[15px] font-semibold">Balance</p>
+          <p
+            className={`text-[30px] font-bold ${
+              balance > 0
+                ? "text-[#2ecc71]"
+                : balance < 0
+                ? "text-[#e74c3c]"
+                : "text-[#34495e]"
+            }`}
+          >
             {balance > 0
               ? `+${balance}`
               : balance < 0
@@ -92,7 +104,7 @@ const Dashboard = () => {
       <div className="flex justify-center gap-4 my-8">
         <button
           onClick={() => setShowTransactionForm(!showTransactionForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-[#2ecc71] text-white hover:bg-[#27ae60] transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           Nova Transação
@@ -100,7 +112,7 @@ const Dashboard = () => {
 
         <button
           onClick={() => setShowCategoryForm(!showCategoryForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-[#2ecc71] text-white hover:bg-[#27ae60] transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           Nova Categoria
@@ -128,8 +140,20 @@ const Dashboard = () => {
           />
         </FormModal>
       )}
-      <div className="flex justify-center items-center mt-8">
-        <div className="w-180 max-w-4xl">
+      <div className="flex justify-center mt-10">
+        <div className="w-full max-w-4xl px-4">
+          {transactions.length > 0 && (
+            <div className="hidden md:flex mb-4 p-4 bg-gray-100 rounded-lg justify-between items-center">
+              <div className=" text-gray-500 font-semibold pr-4">Categoria</div>
+              <div className=" text-gray-500 font-semibold pr-4">Descrição</div>
+              <div className=" text-gray-500 font-semibold text-right pr-4">
+                Valor
+              </div>
+              <div className=" text-gray-500 font-semibold text-right pr-4">
+                Data
+              </div>
+            </div>
+          )}
           {transactions.map((transaction) => (
             <TransactionCard
               key={transaction.transaction_id}
@@ -143,4 +167,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Home;
