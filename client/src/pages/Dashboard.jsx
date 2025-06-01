@@ -35,11 +35,9 @@ const Dashboard = () => {
     }
   }, [user]);
 
-  console.log("Categories:", categories);
-
   return (
     <div className="mt-10">
-      <div className="w-130 max-w-2xl px-4 ml-15">
+      <div className="w-140 max-w-4xl px-4 ml-15">
         <div className="flex justify-between gap-4">
           <p className="flex items-center ml-2">Categories</p>
           <button
@@ -53,6 +51,7 @@ const Dashboard = () => {
             <FormModal onClose={() => setShowCategoryForm(false)}>
               <CategoryForm
                 onCategoryAdded={() => {
+                  loadCategoriesTotalSpent();
                   setShowCategoryForm(false);
                 }}
                 user={user}

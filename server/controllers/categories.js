@@ -82,6 +82,21 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+const getCategoryName = async (req, res) => {
+  const { user_id, name } = req.params;
+  try {
+    const categories = await db.findAll({
+      where: {
+        user_id: user_id,
+        name: name.toLowerCase(),
+      },
+    });
+    return res.status(200).send(categories);
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 const getTotalSpentByCategory = async (req, res) => {
   const { user_id } = req.params;
   try {
@@ -116,6 +131,7 @@ module.exports = {
   getCategories,
   getCategoryById,
   getCategoriesByUser,
+  getCategoryName,
   createCategory,
   updateCategory,
   deleteCategory,
