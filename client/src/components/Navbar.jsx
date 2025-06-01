@@ -50,8 +50,8 @@ export default function Navbar() {
       icon: <FiTag className="mr-3" />,
     },
     {
-      name: "Relatórios",
-      path: "/reports",
+      name: "Dashboard",
+      path: "/dashboard",
       icon: <FiBarChart className="mr-3" />,
     },
   ];

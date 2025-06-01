@@ -1,6 +1,5 @@
 const db = require("../models/category.js");
 
-// Get all categories
 const getCategories = async (req, res) => {
   try {
     const categories = await db.findAll();
@@ -24,7 +23,6 @@ const getCategoriesByUser = async (req, res) => {
   }
 };
 
-// Get category by id
 const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +36,6 @@ const getCategoryById = async (req, res) => {
   }
 };
 
-// Create new category
 const createCategory = async (req, res) => {
   try {
     const { name, color, user } = req.body;
@@ -53,7 +50,6 @@ const createCategory = async (req, res) => {
   }
 };
 
-// Update category
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,7 +68,6 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// Delete category
 const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,16 +82,31 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-const getCategoriesByUserAndName = async (req, res) => {
-  const { user_id, name } = req.params;
+const getTotalSpentByCategory = async (req, res) => {
+  const { user_id } = req.params;
   try {
-    const categories = await db.findAll({
-      where: {
-        user_id: user_id,
-        name: name.toLowerCase(),
-      },
-    });
-    return res.status(200).send(categories);
+    const result = await db.sequelize.query(
+      `
+      SELECT 
+        c.category_id,
+        c.name,
+        c.color,
+        COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
+        COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
+      FROM categories c
+      LEFT JOIN transactions t 
+        ON c.category_id = t.category_id
+      WHERE c.user_id = :user_id
+      GROUP BY c.category_id, c.name, c.color
+      ORDER BY total_expense DESC
+      `,
+      {
+        replacements: { user_id },
+        type: db.sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).send(result);
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
@@ -109,5 +119,5 @@ module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
-  getCategoriesByUserAndName,
+  getTotalSpentByCategory,
 };

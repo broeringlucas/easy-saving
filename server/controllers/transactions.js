@@ -42,7 +42,6 @@ const getTransactionById = async (req, res) => {
   }
 };
 
-// Create new transaction
 const createTransaction = async (req, res) => {
   try {
     const { amount, description, category, user, type } = req.body;
@@ -62,7 +61,6 @@ const createTransaction = async (req, res) => {
   }
 };
 
-// Update transaction
 const updateTransaction = async (req, res) => {
   try {
     const { id } = req.params;
@@ -83,7 +81,6 @@ const updateTransaction = async (req, res) => {
   }
 };
 
-// Delete transaction
 const deleteTransaction = async (req, res) => {
   try {
     const { id } = req.params;

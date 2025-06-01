@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
+import { CategoryService } from "../services/CategoryService";
 import api from "../api";
 
 const TransactionForm = ({ onTransactionAdded, user }) => {
@@ -19,23 +20,22 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
   });
   const [formError, setFormError] = useState("");
 
+  const loadCategories = async () => {
+    try {
+      const data = await CategoryService.fetchAll(user.user_id);
+      setCategories(data);
+    } catch (error) {
+      setFormError("Erro ao carregar categorias");
+    }
+  };
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get(`categories/user/${user.user_id}`);
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Erro ao carregar categorias", error);
-        setFormError("Erro ao carregar categorias");
-      }
-    };
-    fetchCategories();
+    loadCategories();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTransaction((prev) => ({ ...prev, [name]: value }));
-    // Limpa o erro quando o usuário digitar
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }

@@ -4,7 +4,6 @@ const jwtHelper = require("../utils/jwtHelper.js");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
-// register new user
 const signupUser = async (req, res) => {
   try {
     const { name, password, email, phone, birthday } = req.body;
@@ -37,7 +36,6 @@ const signupUser = async (req, res) => {
   }
 };
 
-// Sign in user
 const signinUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -48,13 +46,11 @@ const signinUser = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    // Verify password
     const passwordIsValid = bcrypt.compareSync(password, user.password);
     if (!passwordIsValid) {
       return res.status(401).send({ message: "Invalid credentials" });
     }
 
-    // Generate token
     const token = jwtHelper.generateToken({ id: user.user_id });
 
     res.cookie("token", token, {
