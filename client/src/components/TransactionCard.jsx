@@ -30,7 +30,7 @@ const TransactionCard = ({ transaction, onDelete }) => {
         <div className="w-[20%] pr-4">
           <p
             className={`text-[18px] font-semibold ${
-              transaction.type === 0 ? "text-red-500" : "text-green-500"
+              transaction.type === 0 ? "text-[#e74c3c]" : "text-[#2ecc71]"
             }`}
           >
             {transaction.type === 0 ? "-" : "+"} R$

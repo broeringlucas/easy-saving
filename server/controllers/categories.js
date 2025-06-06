@@ -69,14 +69,49 @@ const updateCategory = async (req, res) => {
 };
 
 const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  const sequelize = db.sequelize;
+
   try {
-    const { id } = req.params;
     const category = await db.findByPk(id);
     if (!category) {
       return res.status(404).send({ message: "Category not found" });
     }
-    await category.destroy();
-    return res.status(200).send({ message: "Category deleted successfully" });
+    const t = await sequelize.transaction();
+
+    try {
+      await sequelize.query(
+        `
+        DELETE
+          FROM transactions
+        WHERE category_id = :categoryId
+        `,
+        {
+          replacements: { categoryId: id },
+          type: sequelize.QueryTypes.DELETE,
+          transaction: t,
+        }
+      );
+      await sequelize.query(
+        `
+        DELETE
+          FROM categories
+        WHERE category_id = :categoryId
+        `,
+        {
+          replacements: { categoryId: id },
+          type: sequelize.QueryTypes.DELETE,
+          transaction: t,
+        }
+      );
+      await t.commit();
+      return res.status(200).send({
+        message: "Category and its transactions deleted successfully",
+      });
+    } catch (innerErr) {
+      await t.rollback();
+      throw innerErr;
+    }
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
@@ -99,7 +134,20 @@ const getCategoryName = async (req, res) => {
 
 const getTotalSpentByCategory = async (req, res) => {
   const { user_id } = req.params;
+  const { period } = req.query;
   try {
+    let whereClause = "";
+    const replacements = { user_id };
+
+    if (period && period !== "total") {
+      const months = parseInt(period);
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - months);
+
+      whereClause = "AND DATE(t.timestamp) >= DATE(:startDate)";
+      replacements.startDate = startDate.toISOString().split("T")[0];
+    }
+
     const result = await db.sequelize.query(
       `
       SELECT 
@@ -111,12 +159,13 @@ const getTotalSpentByCategory = async (req, res) => {
       FROM categories c
       LEFT JOIN transactions t 
         ON c.category_id = t.category_id
+        ${whereClause}
       WHERE c.user_id = :user_id
       GROUP BY c.category_id, c.name, c.color
       ORDER BY total_expense DESC
       `,
       {
-        replacements: { user_id },
+        replacements,
         type: db.sequelize.QueryTypes.SELECT,
       }
     );

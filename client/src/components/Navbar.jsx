@@ -40,16 +40,6 @@ export default function Navbar() {
       icon: <FiHome className="mr-3" />,
     },
     {
-      name: "Transações",
-      path: "/transactions",
-      icon: <FiDollarSign className="mr-3" />,
-    },
-    {
-      name: "Categorias",
-      path: "/categories",
-      icon: <FiTag className="mr-3" />,
-    },
-    {
       name: "Dashboard",
       path: "/dashboard",
       icon: <FiBarChart className="mr-3" />,
@@ -116,7 +106,7 @@ export default function Navbar() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
+        <div className="flex justify-between items-center p-3 shadow-md">
           <h2 className="text-xl font-bold text-gray-700">Menu</h2>
           <button
             onClick={() => setIsSidebarOpen(false)}

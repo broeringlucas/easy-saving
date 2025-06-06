@@ -1,33 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api";
 
-const CategoryForm = ({ onCategoryAdded, user }) => {
-  const [category, setCategory] = useState({
+const CategoryForm = ({
+  category = null,
+  user,
+  isEdit = false,
+  onCategoryAdded,
+  onCategoryUpdated,
+  onClose,
+}) => {
+  const [formData, setFormData] = useState({
     name: "",
     color: "#3b82f6",
     user: user.user_id,
   });
-  const [errors, setErrors] = useState({
-    name: "",
-  });
+  const [errors, setErrors] = useState({ name: "" });
   const [formError, setFormError] = useState(null);
+
+  useEffect(() => {
+    if (isEdit && category) {
+      setFormData({
+        name: category.name,
+        color: category.color,
+        user: category.user_id,
+      });
+    }
+  }, [isEdit, category]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCategory({ ...category, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
     if (formError) setFormError(null);
   };
 
   const validateForm = () => {
-    const newErrors = {
-      name: "",
-    };
+    const newErrors = { name: "" };
     let isValid = true;
 
-    if (!category.name.trim()) {
+    if (!formData.name.trim()) {
       newErrors.name = "O nome da categoria é obrigatório";
       isValid = false;
     }
@@ -38,7 +51,6 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       setFormError("Preencha todos os campos obrigatórios.");
       return;
@@ -47,31 +59,62 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
     try {
       const response = await api.get(
         `/categories/user/${user.user_id}/name/${encodeURIComponent(
-          category.name
+          formData.name
         )}`
       );
+      const existing = response.data;
 
-      if (response.data.length > 0) {
-        setErrors({
-          ...errors,
+      if (!isEdit && existing.length > 0) {
+        setErrors((prev) => ({
+          ...prev,
           name: "Já existe uma categoria com este nome.",
-        });
+        }));
+        return;
+      }
+      if (
+        isEdit &&
+        existing.length > 0 &&
+        existing.some((cat) => cat.category_id !== category.category_id)
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          name: "Já existe uma categoria com este nome.",
+        }));
         return;
       }
 
-      await api.post("/categories", {
-        name: category.name,
-        color: category.color,
-        user: category.user,
-      });
-
-      setCategory({ name: "", color: "#3b82f6", user: user.user_id });
+      if (isEdit) {
+        await api.put(`/categories/${category.category_id}`, {
+          name: formData.name,
+          color: formData.color,
+        });
+        if (onCategoryUpdated) {
+          onCategoryUpdated({
+            category_id: category.category_id,
+            name: formData.name,
+            color: formData.color,
+            user_id: category.user_id,
+          });
+        }
+      } else {
+        await api.post("/categories", {
+          name: formData.name,
+          color: formData.color,
+          user: formData.user,
+        });
+        setFormData({ name: "", color: "#3b82f6", user: user.user_id });
+        if (onCategoryAdded) onCategoryAdded();
+      }
       setErrors({ name: "" });
       setFormError(null);
-      onCategoryAdded();
+      if (onClose) onClose();
     } catch (error) {
       console.error(error);
-      setFormError("Erro ao criar categoria. Tente novamente.");
+      setFormError(
+        isEdit
+          ? "Erro ao atualizar categoria. Tente novamente."
+          : "Erro ao criar categoria. Tente novamente."
+      );
     }
   };
 
@@ -81,7 +124,7 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
       className="max-w-md mx-auto p-6 bg-white rounded-lg space-y-4"
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Nova Categoria
+        {isEdit ? "Editar Categoria" : "Nova Categoria"}
       </h2>
 
       {formError && (
@@ -97,13 +140,14 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
         <input
           type="text"
           name="name"
-          value={category.name}
+          value={formData.name}
           onChange={handleChange}
           className={`w-full px-3 py-2 border ${
             errors.name ? "border-red-500" : "border-gray-300"
           } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           maxLength={50}
           placeholder="Ex: Alimentação"
+          required
         />
         {errors.name && (
           <p className="text-red-500 text-xs italic mt-1">{errors.name}</p>
@@ -117,21 +161,20 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
         <div className="flex items-center gap-4">
           <div
             className="w-10 h-10 rounded-md border border-gray-300 shadow-sm"
-            style={{ backgroundColor: category.color }}
+            style={{ backgroundColor: formData.color }}
           />
-
           <div className="relative flex-1">
             <input
               type="color"
-              value={category.color}
-              onChange={(e) =>
-                setCategory({ ...category, color: e.target.value })
-              }
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              required
             />
             <div className="px-3 py-2 border border-gray-300 rounded-md bg-white flex items-center justify-between hover:border-gray-400">
               <span className="text-sm font-mono">
-                {category.color.toUpperCase()}
+                {formData.color.toUpperCase()}
               </span>
               <svg
                 className="h-4 w-4 text-gray-500"
@@ -150,11 +193,16 @@ const CategoryForm = ({ onCategoryAdded, user }) => {
           </div>
         </div>
       </div>
+
       <button
         type="submit"
-        className="w-full mt-4 bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className={`w-full mt-4 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+          isEdit
+            ? "bg-blue-500 hover:bg-blue-600"
+            : "bg-[#2ecc71] hover:bg-[#27ae60]"
+        }`}
       >
-        Criar Categoria
+        {isEdit ? "Salvar Alterações" : "Criar Categoria"}
       </button>
     </form>
   );

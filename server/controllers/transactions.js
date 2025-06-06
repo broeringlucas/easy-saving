@@ -44,7 +44,7 @@ const getTransactionById = async (req, res) => {
 
 const createTransaction = async (req, res) => {
   try {
-    const { amount, description, category, user, type } = req.body;
+    const { amount, description, category, user, type, timestamp } = req.body;
 
     await db.create({
       amount: amount,
@@ -52,6 +52,7 @@ const createTransaction = async (req, res) => {
       category_id: category,
       user_id: user,
       type: type,
+      timestamp: timestamp || new Date(),
     });
     return res
       .status(201)
@@ -97,6 +98,48 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
+const getMonthlySummary = async (req, res) => {
+  const { user_id } = req.params;
+  const { period } = req.query;
+
+  try {
+    let whereClause = "WHERE t.user_id = :user_id ";
+    const replacements = { user_id };
+
+    if (period && period !== "total") {
+      const months = parseInt(period);
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - months);
+
+      whereClause += "AND DATE(t.timestamp) >= DATE(:startDate)";
+      replacements.startDate = startDate.toISOString().split("T")[0];
+    }
+
+    console.log(whereClause);
+    const result = await db.sequelize.query(
+      `
+      SELECT 
+        to_char(t.timestamp, 'YYYY-MM') AS month,
+        COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
+        COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
+      FROM transactions t
+      ${whereClause}
+      GROUP BY to_char(t.timestamp, 'YYYY-MM')
+      ORDER BY month DESC
+      `,
+      {
+        replacements,
+        type: db.sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).send(result);
+  } catch (error) {
+    console.error("Erro detalhado:", error);
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   getTransactions,
   getTransactionById,
@@ -104,4 +147,5 @@ module.exports = {
   createTransaction,
   updateTransaction,
   deleteTransaction,
+  getMonthlySummary,
 };

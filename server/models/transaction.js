@@ -14,7 +14,6 @@ const Transaction = db.define(
     timestamp: {
       type: Sequelize.DATE,
       allowNull: false,
-      defaultValue: Sequelize.NOW,
     },
     amount: {
       type: Sequelize.DECIMAL(10, 2),

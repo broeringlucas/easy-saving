@@ -11,12 +11,13 @@ export const CategoryService = {
     }
   },
 
-  fetchAllTotalSpent: async (userId) => {
+  fetchAllTotalSpent: async (userId, period) => {
     try {
-      const response = await api.get(`categories/user/${userId}/total`);
+      const response = await api.get(
+        `/categories/user/${userId}/total?period=${period}`
+      );
       return response.data;
     } catch (error) {
-      console.error("Erro ao carregar total gasto por categoria", error);
       throw error;
     }
   },

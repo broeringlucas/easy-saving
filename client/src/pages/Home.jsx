@@ -62,17 +62,15 @@ const Home = () => {
         <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#2ecc71]">
           <p className="text-[15px] font-semibold mb-1">Income</p>
           <p className="text-[30px] font-bold text-[#2ecc71]">
-            {incomeTotal > 0 ? `+${incomeTotal}` : incomeTotal}
+            {incomeTotal > 0 ? `+${incomeTotal.toFixed(2)}` : incomeTotal}
           </p>
         </div>
-
         <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#e74c3c]">
           <p className="text-[15px] font-semibold mb-1">Expense</p>
           <p className="text-[30px] font-bold text-[#e74c3c]">
-            {expenseTotal > 0 ? `-${expenseTotal}` : expenseTotal}
+            {expenseTotal > 0 ? `-${expenseTotal.toFixed(2)}` : expenseTotal}
           </p>
         </div>
-
         <div
           className={`py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 ${
             balance > 0
@@ -93,9 +91,9 @@ const Home = () => {
             }`}
           >
             {balance > 0
-              ? `+${balance}`
+              ? `+${balance.toFixed(2)}`
               : balance < 0
-              ? `-${Math.abs(balance)}`
+              ? `-${Math.abs(balance).toFixed(2)}`
               : balance}
           </p>
         </div>
