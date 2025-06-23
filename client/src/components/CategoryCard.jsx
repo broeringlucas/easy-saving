@@ -16,14 +16,14 @@ const CategoryCard = ({ category, onDelete, onEdit }) => {
       </p>
       <p
         className={`text-[18px] font-semibold ${
-          category.total_income > 0 ? "text-[#2ecc71]" : "text-[#34495e]"
+          category.total_income > 0 ? "text-p-green" : "text-p-gray"
         }`}
       >
         {category.total_income > 0 ? `+ R$${category.total_income}` : "R$0"}
       </p>
       <p
         className={`text-[18px] font-semibold text-center ${
-          category.total_expense > 0 ? "text-[#e74c3c]" : "text-[#34495e]"
+          category.total_expense > 0 ? "text-p-red" : "text-p-gray"
         }`}
       >
         {category.total_expense > 0 ? `- R$${category.total_expense}` : "R$0"}
@@ -31,10 +31,10 @@ const CategoryCard = ({ category, onDelete, onEdit }) => {
       <p
         className={`flex justify-end text-[18px] font-semibold ${
           balance > 0
-            ? "text-[#2ecc71]"
+            ? "text-p-green"
             : balance < 0
-            ? "text-[#e74c3c]"
-            : "text-[#34495e]"
+            ? "text-p-red"
+            : "text-p-gray"
         }`}
       >
         {balance > 0

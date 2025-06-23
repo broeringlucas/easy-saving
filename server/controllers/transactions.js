@@ -1,46 +1,4 @@
 const db = require("../models/transaction.js");
-const Category = require("../models/category.js");
-
-const getTransactions = async (req, res) => {
-  try {
-    const transactions = await db.findAll({
-      include: Category,
-    });
-
-    return res.status(200).send(transactions);
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
-
-const getTransactionsByUser = async (req, res) => {
-  const { user_id } = req.params;
-  try {
-    const transactions = await db.findAll({
-      where: {
-        user_id: user_id,
-      },
-      include: Category,
-    });
-
-    return res.status(200).send(transactions);
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
-
-const getTransactionById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const transaction = await db.findByPk(id);
-    if (!transaction) {
-      return res.status(404).send({ message: "Transaction not found" });
-    }
-    return res.status(200).send(transaction);
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
 
 const createTransaction = async (req, res) => {
   try {
@@ -62,26 +20,6 @@ const createTransaction = async (req, res) => {
   }
 };
 
-const updateTransaction = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { amount, description, category } = req.body;
-    const transaction = await db.findByPk(id);
-    if (!transaction) {
-      return res.status(404).send({ message: "Transaction not found" });
-    }
-    transaction.amount = amount;
-    transaction.description = description;
-    transaction.category = category;
-    await transaction.save();
-    return res
-      .status(200)
-      .send({ message: "Transaction updated successfully" });
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
-
 const deleteTransaction = async (req, res) => {
   try {
     const { id } = req.params;
@@ -94,6 +32,46 @@ const deleteTransaction = async (req, res) => {
       .status(200)
       .send({ message: "Transaction deleted successfully" });
   } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getTransactionsByUser = async (req, res) => {
+  const { user_id } = req.params;
+  let { period } = req.query;
+
+  try {
+    let whereClause = "WHERE t.user_id = :user_id ";
+    const replacements = { user_id };
+
+    if (period && period !== "total") {
+      const months = parseInt(period);
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - months);
+
+      whereClause += "AND DATE(t.timestamp) >= DATE(:startDate)";
+      replacements.startDate = startDate.toISOString().split("T")[0];
+    }
+    const result = await db.sequelize.query(
+      `
+      SELECT 
+        t.*,
+        c.category_id as category_id,
+        c.name as category_name,
+        c.color as category_color
+      FROM transactions t
+      LEFT JOIN categories c ON t.category_id = c.category_id
+      ${whereClause}
+      ORDER BY t.timestamp DESC
+      `,
+      {
+        replacements,
+        type: db.sequelize.QueryTypes.SELECT,
+      }
+    );
+    return res.status(200).send(result);
+  } catch (error) {
+    console.error("Erro detalhado:", error);
     return res.status(500).send({ message: error.message });
   }
 };
@@ -115,7 +93,6 @@ const getMonthlySummary = async (req, res) => {
       replacements.startDate = startDate.toISOString().split("T")[0];
     }
 
-    console.log(whereClause);
     const result = await db.sequelize.query(
       `
       SELECT 
@@ -141,11 +118,8 @@ const getMonthlySummary = async (req, res) => {
 };
 
 module.exports = {
-  getTransactions,
-  getTransactionById,
   getTransactionsByUser,
   createTransaction,
-  updateTransaction,
   deleteTransaction,
   getMonthlySummary,
 };

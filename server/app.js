@@ -1,9 +1,10 @@
-const db = require("./db.js");
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const db = require("./config/db");
+
 const users = require("./routes/users");
 const transactions = require("./routes/transactions");
 const categories = require("./routes/categories");
-const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
 require("dotenv").config();

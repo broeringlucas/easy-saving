@@ -1,26 +1,31 @@
 import { useState, useEffect } from "react";
+
 import api from "../api";
 import TransactionCard from "../components/TransactionCard";
 import TransactionForm from "../components/TransactionForm";
 import FormModal from "../components/FormModal";
 import CategoryForm from "../components/CategoryForm";
+import IntervalSelect from "../components/IntervalSelect";
 
 const Home = () => {
   const [transactions, setTransactions] = useState([]);
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [user, setUser] = useState(null);
+  const [selectedPeriod, setSelectedPeriod] = useState("total");
 
   const fetchUser = async () => {
     const response = await api.get("/users/user", { withCredentials: true });
     setUser(response.data);
-    console.log("User:", response.data);
   };
 
-  const fetchTransactions = async () => {
-    const response = await api.get(`/transactions/user/${user.user_id}`, {
-      withCredentials: true,
-    });
+  const fetchTransactions = async (period) => {
+    const response = await api.get(
+      `/transactions/user/${user.user_id}?period=${period}`,
+      {
+        withCredentials: true,
+      }
+    );
     setTransactions(response.data);
   };
 
@@ -33,7 +38,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error deleting transaction:", error);
     }
-    fetchTransactions();
+    fetchTransactions(selectedPeriod);
   };
 
   useEffect(() => {
@@ -42,9 +47,9 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      fetchTransactions();
+      fetchTransactions(selectedPeriod);
     }
-  }, [user]);
+  }, [user, selectedPeriod]);
 
   const incomeTotal = transactions
     .filter((t) => t.type === 1)
@@ -57,44 +62,49 @@ const Home = () => {
   const balance = incomeTotal - expenseTotal;
 
   return (
-    <div>
-      <div className="flex justify-center space-x-4 mt-10 mb-10 h-20">
-        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#2ecc71]">
-          <p className="text-[15px] font-semibold mb-1">Income</p>
-          <p className="text-[30px] font-bold text-[#2ecc71]">
-            {incomeTotal > 0 ? `+${incomeTotal.toFixed(2)}` : incomeTotal}
+    <div className="mt-10 px-6 lg:px-12">
+      <IntervalSelect value={selectedPeriod} onChange={setSelectedPeriod} />
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
+        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-green">
+          <p className="text-base sm:text-lg font-semibold mb-1">Income</p>
+          <p className="text-2xl sm:text-3xl font-bold text-p-green">
+            {incomeTotal > 0
+              ? `+${incomeTotal.toFixed(2)}`
+              : incomeTotal.toFixed(2)}
           </p>
         </div>
-        <div className="py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 border-[#e74c3c]">
-          <p className="text-[15px] font-semibold mb-1">Expense</p>
-          <p className="text-[30px] font-bold text-[#e74c3c]">
-            {expenseTotal > 0 ? `-${expenseTotal.toFixed(2)}` : expenseTotal}
+        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-red">
+          <p className="text-base sm:text-lg font-semibold mb-1">Expense</p>
+          <p className="text-2xl sm:text-3xl font-bold text-p-red">
+            {expenseTotal > 0
+              ? `-${expenseTotal.toFixed(2)}`
+              : expenseTotal.toFixed(2)}
           </p>
         </div>
         <div
-          className={`py-2 px-6 rounded-lg shadow-lg w-90 text-left border-l-3 ${
+          className={`flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 ${
             balance > 0
-              ? "border-[#2ecc71]"
+              ? "border-p-green"
               : balance < 0
-              ? "border-[#e74c3c]"
-              : "border-[#34495e]"
+              ? "border-p-red"
+              : "border-p-gray"
           }`}
         >
-          <p className="text-[15px] font-semibold">Balance</p>
+          <p className="text-base sm:text-lg font-semibold">Balance</p>
           <p
-            className={`text-[30px] font-bold ${
+            className={`text-2xl sm:text-3xl font-bold ${
               balance > 0
-                ? "text-[#2ecc71]"
+                ? "text-p-green"
                 : balance < 0
-                ? "text-[#e74c3c]"
-                : "text-[#34495e]"
+                ? "text-p-red"
+                : "text-p-gray"
             }`}
           >
             {balance > 0
               ? `+${balance.toFixed(2)}`
               : balance < 0
               ? `-${Math.abs(balance).toFixed(2)}`
-              : balance}
+              : balance.toFixed(2)}
           </p>
         </div>
       </div>
@@ -102,7 +112,7 @@ const Home = () => {
       <div className="flex justify-center gap-4 my-8">
         <button
           onClick={() => setShowTransactionForm(!showTransactionForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-[#2ecc71] text-white hover:bg-[#27ae60] transition-colors duration-300"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           Nova Transação
@@ -110,7 +120,7 @@ const Home = () => {
 
         <button
           onClick={() => setShowCategoryForm(!showCategoryForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-[#2ecc71] text-white hover:bg-[#27ae60] transition-colors duration-300"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           Nova Categoria
@@ -120,7 +130,7 @@ const Home = () => {
         <FormModal onClose={() => setShowTransactionForm(false)}>
           <TransactionForm
             onTransactionAdded={() => {
-              fetchTransactions();
+              fetchTransactions(selectedPeriod);
               setShowTransactionForm(false);
             }}
             user={user}

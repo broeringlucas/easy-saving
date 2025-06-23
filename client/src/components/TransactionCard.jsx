@@ -13,15 +13,15 @@ const TransactionCard = ({ transaction, onDelete }) => {
   return (
     <div
       className={`relative flex items-center p-6 bg-white rounded-lg shadow-md w-full mx-auto max-w-6xl hover:bg-gray-100 transition-all group mb-3 border-l-[6px] min-h-[100px]`}
-      style={{ borderLeftColor: transaction.category?.color }}
+      style={{ borderLeftColor: transaction.category_color }}
     >
       <div className="flex flex-1 w-full items-center">
         <div className="w-[20%] pr-4">
           <p
             className="text-[23px] font-bold truncate"
-            style={{ color: transaction.category?.color }}
+            style={{ color: transaction.category_color }}
           >
-            {transaction.category?.name}
+            {transaction.category_name}
           </p>
         </div>
         <div className="w-[40%] pr-4">
@@ -30,7 +30,7 @@ const TransactionCard = ({ transaction, onDelete }) => {
         <div className="w-[20%] pr-4">
           <p
             className={`text-[18px] font-semibold ${
-              transaction.type === 0 ? "text-[#e74c3c]" : "text-[#2ecc71]"
+              transaction.type === 0 ? "text-p-red" : "text-p-green"
             }`}
           >
             {transaction.type === 0 ? "-" : "+"} R$

@@ -1,9 +1,4 @@
 import { useState, useEffect } from "react";
-import api from "../api";
-import { CategoryService } from "../services/CategoryService";
-import CategoryCard from "../components/CategoryCard";
-import FormModal from "../components/FormModal";
-import CategoryForm from "../components/CategoryForm";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -17,6 +12,13 @@ import {
   LineElement,
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
+
+import api from "../api";
+import { CategoryService } from "../services/CategoryService";
+import CategoryCard from "../components/CategoryCard";
+import FormModal from "../components/FormModal";
+import CategoryForm from "../components/CategoryForm";
+import IntervalSelect from "../components/IntervalSelect";
 
 ChartJS.register(
   ArcElement,
@@ -43,12 +45,8 @@ const Dashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("total");
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [loadingMonthly, setLoadingMonthly] = useState(false);
-
-  // Excluir
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-
-  // Editar
   const [showEditModal, setShowEditModal] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
@@ -57,9 +55,6 @@ const Dashboard = () => {
     setUser(response.data);
   };
 
-  // ----------------------------
-  // Funções de Delete / Prompt
-  // ----------------------------
   const promptDeleteCategory = (category) => {
     setCategoryToDelete(category);
     setShowDeleteModal(true);
@@ -68,7 +63,6 @@ const Dashboard = () => {
   const handleDeleteCategory = async (id) => {
     try {
       await api.delete(`/categories/${id}`);
-      // recarrega após delete
       loadCategoriesTotalSpent(selectedPeriod);
       loadMonthlySummary(selectedPeriod);
     } catch (error) {
@@ -79,23 +73,17 @@ const Dashboard = () => {
     }
   };
 
-  // ----------------------------
-  // Funções de Edit / Prompt
-  // ----------------------------
   const promptEditCategory = (category) => {
-    // abre o modal de edição, preenchendo com os dados atuais
     setCategoryToEdit(category);
     setShowEditModal(true);
   };
 
   const handleEditCategorySubmit = async (updatedCategory) => {
-    // updatedCategory aqui já vem com { category_id, name, color, user_id } ou semelhante
     try {
       await api.put(`/categories/${updatedCategory.category_id}`, {
         name: updatedCategory.name,
         color: updatedCategory.color,
       });
-      // depois de editar, recarrega a lista
       loadCategoriesTotalSpent(selectedPeriod);
       loadMonthlySummary(selectedPeriod);
     } catch (error) {
@@ -106,9 +94,6 @@ const Dashboard = () => {
     }
   };
 
-  // ----------------------------
-  // Carregamento de dados
-  // ----------------------------
   const loadMonthlySummary = async (period) => {
     try {
       setLoadingMonthly(true);
@@ -208,19 +193,7 @@ const Dashboard = () => {
 
   return (
     <div className="mt-10 px-6 lg:px-12">
-      <div className="flex justify-end mb-3">
-        <select
-          value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value)}
-          className="px-4 py-2 border rounded-lg shadow-sm"
-        >
-          <option value="1">Último mês</option>
-          <option value="3">Últimos 3 meses</option>
-          <option value="6">Últimos 6 meses</option>
-          <option value="12">Último ano</option>
-          <option value="total">Total</option>
-        </select>
-      </div>
+      <IntervalSelect value={selectedPeriod} onChange={setSelectedPeriod} />
       <div className="flex flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-2/5 min-w-0">
           <div className="flex justify-between items-center gap-4 pb-4 border-b border-gray-300">
@@ -229,7 +202,7 @@ const Dashboard = () => {
             </p>
             <button
               onClick={() => setShowCategoryForm(!showCategoryForm)}
-              className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-[#2ecc71] text-white hover:bg-[#27ae60] transition-colors duration-300"
+              className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
             >
               <span className="mr-2 text-xl">+</span>
               Nova Categoria
@@ -238,7 +211,7 @@ const Dashboard = () => {
               <FormModal onClose={() => setShowCategoryForm(false)}>
                 <CategoryForm
                   onCategoryAdded={() => {
-                    loadCategoriesTotalSpent("total");
+                    loadCategoriesTotalSpent(selectedPeriod);
                     setShowCategoryForm(false);
                   }}
                   user={user}
@@ -253,8 +226,7 @@ const Dashboard = () => {
                 <p className="text-gray-600 font-semibold">Nome</p>
                 <p className="text-gray-600 font-semibold">Receita</p>
                 <p className="text-gray-600 font-semibold">Despesa</p>
-                <p className="text-gray-600 font-semibold">Saldo</p>
-                <p className="text-gray-600 font-semibold">Ações</p>
+                <p className="text-gray-600 font-semibold">Balanço</p>
               </div>
             )}
             {categories.map((category) => (
@@ -299,7 +271,7 @@ const Dashboard = () => {
                           callbacks: {
                             label: function (context) {
                               const label = context.label || "";
-                              const value = Number(context.raw);
+                              const value = Number(context.raw).toFixed(2);
                               const dataset = context.dataset;
                               const total = dataset.data.reduce(
                                 (a, b) => Number(a) + Number(b),
@@ -354,7 +326,7 @@ const Dashboard = () => {
                           callbacks: {
                             label: function (context) {
                               const label = context.label || "";
-                              const value = Number(context.raw);
+                              const value = Number(context.raw).toFixed(2);
                               const dataset = context.dataset;
                               const total = dataset.data.reduce(
                                 (a, b) => Number(a) + Number(b),
@@ -409,14 +381,28 @@ const Dashboard = () => {
                           grid: {
                             color: "#f0f0f0",
                           },
+                          ticks: {
+                            callback: function (value) {
+                              return Number(value).toFixed(2);
+                            },
+                          },
                         },
                       },
                       plugins: {
                         legend: {
                           position: "top",
                         },
+                        tooltip: {
+                          callbacks: {
+                            label: function (context) {
+                              const label = context.dataset.label || "";
+                              const value = Number(context.raw).toFixed(2);
+                              return `${label}: ${value}`;
+                            },
+                          },
+                        },
                       },
-                      barPercentage: 0.5,
+                      barPercentage: 0.8,
                       borderRadius: 5,
                     }}
                   />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
+
 import { CategoryService } from "../services/CategoryService";
 import api from "../api";
 
@@ -246,7 +247,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
       <div className="flex gap-2 pt-2">
         <button
           type="submit"
-          className="flex-1 bg-[#2ecc71] hover:bg-[#27ae60] text-white font-medium py-2 px-4 rounded-md transition"
+          className="flex-1 bg-p-green hover:bg-s-green text-white font-medium py-2 px-4 rounded-md transition"
         >
           Criar
         </button>

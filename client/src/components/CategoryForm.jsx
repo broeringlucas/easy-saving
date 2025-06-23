@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import api from "../api";
 
 const CategoryForm = ({
@@ -147,7 +148,6 @@ const CategoryForm = ({
           } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           maxLength={50}
           placeholder="Ex: Alimentação"
-          required
         />
         {errors.name && (
           <p className="text-red-500 text-xs italic mt-1">{errors.name}</p>
@@ -199,7 +199,7 @@ const CategoryForm = ({
         className={`w-full mt-4 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
           isEdit
             ? "bg-blue-500 hover:bg-blue-600"
-            : "bg-[#2ecc71] hover:bg-[#27ae60]"
+            : "bg-p-green hover:bg-s-green"
         }`}
       >
         {isEdit ? "Salvar Alterações" : "Criar Categoria"}

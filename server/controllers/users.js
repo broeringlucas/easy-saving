@@ -1,7 +1,7 @@
-const db = require("../models/user.js");
 const bcrypt = require("bcryptjs");
+
 const jwtHelper = require("../utils/jwtHelper.js");
-const cookieParser = require("cookie-parser");
+const db = require("../models/user.js");
 require("dotenv").config();
 
 const signupUser = async (req, res) => {
@@ -76,18 +76,9 @@ const user = async (req, res) => {
   });
 };
 
-const allUsers = async (req, res) => {
-  try {
-    const users = await db.findAll();
-    return res.status(200).send(users);
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
-
 const logoutUser = (req, res) => {
   res.clearCookie("token");
   return res.status(200).send({ message: "Logout successful" });
 };
 
-module.exports = { signupUser, signinUser, allUsers, user, logoutUser };
+module.exports = { signupUser, signinUser, user, logoutUser };

@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import api from "../api";
 import { useNavigate } from "react-router-dom";
 import {
   FiMenu,
   FiX,
   FiHome,
-  FiDollarSign,
-  FiTag,
   FiBarChart,
   FiUser,
   FiLogOut,
 } from "react-icons/fi";
+
+import api from "../api";
 
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -52,18 +51,18 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center p-3 bg-[#2ecc71] shadow-md">
+      <nav className="flex items-center p-3 bg-p-green shadow-md">
         <div className="flex w-full relative">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="ml-5 p-2 hover:bg-[#27ae60] rounded-lg transition-colors"
+            className="ml-5 p-2 hover:bg-s-green rounded-lg transition-colors"
           >
             <FiMenu className="text-white w-6 h-6" />
           </button>
           <div className="ml-auto">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center justify-between px-4 py-2 rounded hover:bg-[#27ae60] ml-auto mr-5 shadow-md w-35 text-white"
+              className="flex items-center justify-between px-4 py-2 rounded hover:bg-s-green ml-auto mr-5 shadow-md w-32 text-white"
             >
               <span className="mr-2">{user?.name.split(" ")[0]}</span>
               <svg
@@ -83,7 +82,7 @@ export default function Navbar() {
               </svg>
             </button>
             {isUserMenuOpen && (
-              <div className="absolute ml-auto mt-2 bg-white rounded-md shadow-lg w-35">
+              <div className="absolute ml-auto mt-2 bg-white rounded-md shadow-lg w-32">
                 <button
                   onClick={() => navigate("/profile")}
                   className="w-full px-4 py-3 text-left hover:bg-gray-100 flex items-center"
@@ -102,11 +101,11 @@ export default function Navbar() {
         </div>
       </nav>
       <div
-        className={`fixed top-0 left-0 h-full w-100 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 left-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-3 shadow-md">
+        <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-bold text-gray-700">Menu</h2>
           <button
             onClick={() => setIsSidebarOpen(false)}
@@ -126,7 +125,7 @@ export default function Navbar() {
               className="w-full flex items-center px-6 py-4 hover:bg-gray-100 text-gray-700 transition-colors"
             >
               {item.icon}
-              {item.name}
+              <span className="text-lg">{item.name}</span>
             </button>
           ))}
         </nav>
