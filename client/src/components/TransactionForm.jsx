@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 
 import { CategoryService } from "../services/CategoryService";
-import api from "../api";
+import { TransactionService } from "../services/TransactionService";
 
 const TransactionForm = ({ onTransactionAdded, user }) => {
   const [transaction, setTransaction] = useState({
@@ -23,10 +23,13 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
 
   const loadCategories = async () => {
     try {
-      const data = await CategoryService.fetchAll(user.user_id);
-      setCategories(data);
+      const categories = await CategoryService.fetchAllCategoriesByUser(
+        user.user_id
+      );
+      setCategories(categories);
     } catch (error) {
-      setFormError("Erro ao carregar categorias");
+      console.error("Erro ao carregar categorias:", error);
+      setFormError("Erro ao carregar categorias. Tente novamente.");
     }
   };
 
@@ -87,7 +90,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
     }
 
     try {
-      await api.post("/transactions", transaction);
+      await TransactionService.createTransaction(transaction);
       setTransaction({
         amount: 0,
         description: "",
@@ -104,7 +107,6 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
       setFormError("");
       onTransactionAdded();
     } catch (error) {
-      console.error(error);
       setFormError("Erro ao criar transação. Tente novamente.");
     }
   };

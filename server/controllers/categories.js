@@ -46,7 +46,7 @@ const getCategoriesByUser = async (req, res) => {
   }
 };
 
-const getCategoryName = async (req, res) => {
+const getCategoryByName = async (req, res) => {
   const { user_id, name } = req.params;
   try {
     const categories = await db.findAll({
@@ -155,10 +155,10 @@ const getTotalSpentByCategory = async (req, res) => {
 };
 
 module.exports = {
-  getCategoriesByUser,
   createCategory,
   updateCategory,
   deleteCategory,
+  getCategoriesByUser,
   getTotalSpentByCategory,
-  getCategoryName,
+  getCategoryByName,
 };

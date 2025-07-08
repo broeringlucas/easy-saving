@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 
-import api from "../api";
 import TransactionCard from "../components/TransactionCard";
 import TransactionForm from "../components/TransactionForm";
 import FormModal from "../components/FormModal";
 import CategoryForm from "../components/CategoryForm";
 import IntervalSelect from "../components/IntervalSelect";
+
+import { TransactionService } from "../services/TransactionService";
+import { UserService } from "../services/UserService";
 
 const Home = () => {
   const [transactions, setTransactions] = useState([]);
@@ -15,30 +17,28 @@ const Home = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("total");
 
   const fetchUser = async () => {
-    const response = await api.get("/users/user", { withCredentials: true });
-    setUser(response.data);
+    const response = await UserService.fetchUser();
+    setUser(response);
   };
 
-  const fetchTransactions = async (period) => {
-    const response = await api.get(
-      `/transactions/user/${user.user_id}?period=${period}`,
-      {
-        withCredentials: true,
-      }
+  const loadTransactions = async (period) => {
+    const response = await TransactionService.fetchAllTransactionsByUser(
+      user.user_id,
+      period
     );
-    setTransactions(response.data);
+    setTransactions(response);
   };
 
   const handleDeleteTransaction = async (id) => {
     try {
-      await api.delete(`/transactions/${id}`);
+      await TransactionService.deleteTransaction(id);
       setTransactions(
         transactions.filter((transaction) => transaction.id !== id)
       );
     } catch (error) {
       console.error("Error deleting transaction:", error);
     }
-    fetchTransactions(selectedPeriod);
+    loadTransactions(selectedPeriod);
   };
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      fetchTransactions(selectedPeriod);
+      loadTransactions(selectedPeriod);
     }
   }, [user, selectedPeriod]);
 
@@ -130,7 +130,7 @@ const Home = () => {
         <FormModal onClose={() => setShowTransactionForm(false)}>
           <TransactionForm
             onTransactionAdded={() => {
-              fetchTransactions(selectedPeriod);
+              loadTransactions(selectedPeriod);
               setShowTransactionForm(false);
             }}
             user={user}

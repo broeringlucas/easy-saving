@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import api from "../api";
+import { CategoryService } from "../services/CategoryService";
 
 const CategoryForm = ({
   category = null,
@@ -58,12 +58,11 @@ const CategoryForm = ({
     }
 
     try {
-      const response = await api.get(
-        `/categories/user/${user.user_id}/name/${encodeURIComponent(
-          formData.name
-        )}`
+      const response = await CategoryService.fetchCategoryByName(
+        user.user_id,
+        formData.name
       );
-      const existing = response.data;
+      const existing = response;
 
       if (!isEdit && existing.length > 0) {
         setErrors((prev) => ({
@@ -85,27 +84,28 @@ const CategoryForm = ({
       }
 
       if (isEdit) {
-        await api.put(`/categories/${category.category_id}`, {
-          name: formData.name,
-          color: formData.color,
-        });
-        if (onCategoryUpdated) {
-          onCategoryUpdated({
-            category_id: category.category_id,
+        const updatedCategory = await CategoryService.updateCategory(
+          category.category_id,
+          {
             name: formData.name,
             color: formData.color,
-            user_id: category.user_id,
-          });
+          }
+        );
+
+        if (onCategoryUpdated) {
+          onCategoryUpdated(updatedCategory);
         }
       } else {
-        await api.post("/categories", {
+        const newCategory = await CategoryService.createCategory({
           name: formData.name,
           color: formData.color,
           user: formData.user,
         });
+
         setFormData({ name: "", color: "#3b82f6", user: user.user_id });
-        if (onCategoryAdded) onCategoryAdded();
+        if (onCategoryAdded) onCategoryAdded(newCategory);
       }
+
       setErrors({ name: "" });
       setFormError(null);
       if (onClose) onClose();

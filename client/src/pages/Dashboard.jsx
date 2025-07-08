@@ -13,12 +13,13 @@ import {
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
 
-import api from "../api";
-import { CategoryService } from "../services/CategoryService";
 import CategoryCard from "../components/CategoryCard";
 import FormModal from "../components/FormModal";
 import CategoryForm from "../components/CategoryForm";
 import IntervalSelect from "../components/IntervalSelect";
+import { UserService } from "../services/UserService";
+import { CategoryService } from "../services/CategoryService";
+import { TransactionService } from "../services/TransactionService";
 
 ChartJS.register(
   ArcElement,
@@ -51,8 +52,8 @@ const Dashboard = () => {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const fetchUser = async () => {
-    const response = await api.get("/users/user", { withCredentials: true });
-    setUser(response.data);
+    const response = await UserService.fetchUser();
+    setUser(response);
   };
 
   const promptDeleteCategory = (category) => {
@@ -62,7 +63,7 @@ const Dashboard = () => {
 
   const handleDeleteCategory = async (id) => {
     try {
-      await api.delete(`/categories/${id}`);
+      await await CategoryService.deleteCategory(id);
       loadCategoriesTotalSpent(selectedPeriod);
       loadMonthlySummary(selectedPeriod);
     } catch (error) {
@@ -78,30 +79,14 @@ const Dashboard = () => {
     setShowEditModal(true);
   };
 
-  const handleEditCategorySubmit = async (updatedCategory) => {
-    try {
-      await api.put(`/categories/${updatedCategory.category_id}`, {
-        name: updatedCategory.name,
-        color: updatedCategory.color,
-      });
-      loadCategoriesTotalSpent(selectedPeriod);
-      loadMonthlySummary(selectedPeriod);
-    } catch (error) {
-      console.error("Error updating category:", error);
-    } finally {
-      setShowEditModal(false);
-      setCategoryToEdit(null);
-    }
-  };
-
   const loadMonthlySummary = async (period) => {
     try {
       setLoadingMonthly(true);
-      const response = await api.get(
-        `/transactions/summary/monthly/${user.user_id}?period=${period}`,
-        { withCredentials: true }
+      const response = await TransactionService.fetchMonthlyTransactionsByUser(
+        user.user_id,
+        period
       );
-      setMonthlySummary(response.data);
+      setMonthlySummary(response);
     } catch (error) {
       console.error("Erro ao carregar resumo mensal:", error);
     } finally {
@@ -112,11 +97,11 @@ const Dashboard = () => {
   const loadCategoriesTotalSpent = async (period) => {
     try {
       setLoadingCategories(true);
-      const data = await CategoryService.fetchAllTotalSpent(
+      const response = await CategoryService.fetchAllCategoriesTotalSpent(
         user.user_id,
         period
       );
-      setCategories(data);
+      setCategories(response);
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
     } finally {
@@ -458,9 +443,12 @@ const Dashboard = () => {
             category={categoryToEdit}
             user={user}
             isEdit={true}
-            onCategoryUpdated={(updatedCategory) =>
-              handleEditCategorySubmit(updatedCategory)
-            }
+            onCategoryUpdated={() => {
+              loadCategoriesTotalSpent(selectedPeriod);
+              loadMonthlySummary(selectedPeriod);
+              setShowEditModal(false);
+            }}
+            onClose={() => setShowEditModal(false)}
           />
         </FormModal>
       )}

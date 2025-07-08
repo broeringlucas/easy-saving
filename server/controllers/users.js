@@ -1,10 +1,10 @@
 const bcrypt = require("bcryptjs");
 
-const jwtHelper = require("../utils/jwtHelper.js");
+const jwtHelper = require("../utils/JwtHelper.js");
 const db = require("../models/user.js");
 require("dotenv").config();
 
-const signupUser = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { name, password, email, phone, birthday } = req.body;
 
@@ -36,14 +36,14 @@ const signupUser = async (req, res) => {
   }
 };
 
-const signinUser = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await db.findOne({
       where: { email: email },
     });
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: "Invalid credentials" });
     }
 
     const passwordIsValid = bcrypt.compareSync(password, user.password);
@@ -76,9 +76,9 @@ const user = async (req, res) => {
   });
 };
 
-const logoutUser = (req, res) => {
+const logout = (req, res) => {
   res.clearCookie("token");
   return res.status(200).send({ message: "Logout successful" });
 };
 
-module.exports = { signupUser, signinUser, user, logoutUser };
+module.exports = { register, login, user, logout };

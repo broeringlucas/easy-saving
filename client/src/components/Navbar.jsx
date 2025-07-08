@@ -9,7 +9,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 
-import api from "../api";
+import { UserService } from "../services/UserService";
 
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,15 +18,15 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const fetchUser = async () => {
-    const response = await api.get("/users/user", { withCredentials: true });
-    setUser(response.data);
+    const response = await UserService.fetchUser();
+    setUser(response);
   };
 
-  const logOut = async () => {
+  const logout = async () => {
     try {
-      await api.post("/users/logout", {}, { withCredentials: true });
+      await UserService.logout();
       setUser(null);
-      navigate("/signin");
+      navigate("/login");
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -90,7 +90,7 @@ export default function Navbar() {
                   <FiUser className="mr-2" /> Perfil
                 </button>
                 <button
-                  onClick={logOut}
+                  onClick={logout}
                   className="w-full px-4 py-3 text-left hover:bg-gray-100 flex items-center"
                 >
                   <FiLogOut className="mr-2" /> Sair

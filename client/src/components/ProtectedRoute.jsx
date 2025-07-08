@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-import api from "../api";
+import { UserService } from "../services/UserService";
 
 const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -10,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await api.get("/users/user", { withCredentials: true });
+        await UserService.fetchUser();
         setIsAuthenticated(true);
       } catch (error) {
         setIsAuthenticated(false);
@@ -23,11 +22,15 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+        <div className="w-12 h-12 border-4 border-p-green border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
