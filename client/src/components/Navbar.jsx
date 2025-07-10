@@ -105,13 +105,13 @@ export default function Navbar() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold text-gray-700">Menu</h2>
+        <div className="flex justify-between items-center p-4 bg-p-green shadow-md">
+          <h2 className="text-[24px] font-bold text-white">Menu</h2>
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="p-1 hover:bg-gray-100 rounded-lg"
+            className="p-1 hover:bg-s-green rounded-lg"
           >
-            <FiX className="w-6 h-6 text-gray-600" />
+            <FiX className="w-6 h-6 text-white" />
           </button>
         </div>
         <nav className="mt-4">

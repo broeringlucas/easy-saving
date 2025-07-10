@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Register from "./components/Register";
-import Login from "./components/Login";
+import LoginPage from "./pages/LoginPage";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -12,7 +12,7 @@ function Layout() {
     <>
       <Routes>
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route
           path="/home"
           element={

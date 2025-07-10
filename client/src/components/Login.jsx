@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Importe Link
 import { UserService } from "../services/UserService";
 import ErrorMessage from "./ErrorMessage";
 
-const Login = () => {
+const Login = ({ onRegisterClick }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -113,13 +113,23 @@ const Login = () => {
             <p className="text-red-500 text-xs mt-1">{errors.password}</p>
           )}
         </div>
-
         <button
           type="submit"
           className="w-full mt-4 bg-p-green hover:bg-s-green text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
         >
-          Sign in
+          Login
         </button>
+        <div className="text-center mt-6">
+          <p className="text-gray-600 text-sm">
+            Não tem uma conta?{" "}
+            <Link
+              to="/register"
+              className="text-p-green hover:text-s-green font-bold"
+            >
+              Registre-se
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );
