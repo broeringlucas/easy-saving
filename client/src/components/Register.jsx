@@ -191,136 +191,129 @@ const Register = () => {
     }
   };
 
-  const handleBackToLogin = () => {
-    navigate("/login");
-  };
-
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="w-full md:w-1/2 bg-green-500 flex items-center justify-center p-8"></div>
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 bg-white">
-        <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 space-y-6">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-            Criar Conta
-          </h2>
+    <div className="w-full md:w-1/2 flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 space-y-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+          Criar Conta
+        </h2>
 
-          <ErrorMessage message={message} />
+        <ErrorMessage message={message} />
 
-          <div>
-            <label className="block text-gray-700 text-base font-bold mb-2">
-              Nome Completo:
-            </label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Nome Completo"
-              value={formData.name}
-              onChange={handleInputChange}
-              className={`w-full px-4 py-3 text-lg border ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-            )}
-          </div>
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-2">
+            Nome Completo:
+          </label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Nome Completo"
+            value={formData.name}
+            onChange={handleInputChange}
+            className={`w-full px-4 py-3 text-lg border ${
+              errors.name ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+          )}
+        </div>
 
-          <div>
-            <label className="block text-gray-700 text-base font-bold mb-2">
-              Data de Nascimento:
-            </label>
-            <input
-              type="text"
-              name="birthday"
-              placeholder="dd/mm/aaaa"
-              value={formData.birthday}
-              onChange={handleInputChange}
-              maxLength={10}
-              className={`w-full px-4 py-3 text-lg border ${
-                errors.birthday ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            {errors.birthday && (
-              <p className="text-red-500 text-sm mt-1">{errors.birthday}</p>
-            )}
-          </div>
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-2">
+            Data de Nascimento:
+          </label>
+          <input
+            type="text"
+            name="birthday"
+            placeholder="dd/mm/aaaa"
+            value={formData.birthday}
+            onChange={handleInputChange}
+            maxLength={10}
+            className={`w-full px-4 py-3 text-lg border ${
+              errors.birthday ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          {errors.birthday && (
+            <p className="text-red-500 text-sm mt-1">{errors.birthday}</p>
+          )}
+        </div>
 
-          <div>
-            <label className="block text-gray-700 text-base font-bold mb-2">
-              Telefone:
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="(99) 99999-9999"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className={`w-full px-4 py-3 text-lg border ${
-                errors.phone ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-            )}
-          </div>
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-2">
+            Telefone:
+          </label>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="(99) 99999-9999"
+            value={formData.phone}
+            onChange={handleInputChange}
+            className={`w-full px-4 py-3 text-lg border ${
+              errors.phone ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+          )}
+        </div>
 
-          <div>
-            <label className="block text-gray-700 text-base font-bold mb-2">
-              Email:
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={`w-full px-4 py-3 text-lg border ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-2">
+            Email:
+          </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleInputChange}
+            className={`w-full px-4 py-3 text-lg border ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
+        </div>
 
-          <div>
-            <label className="block text-gray-700 text-base font-bold mb-2">
-              Senha:
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Senha (mínimo 8 caracteres)"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={`w-full px-4 py-3 text-lg border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-2">
+            Senha:
+          </label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Senha (mínimo 8 caracteres)"
+            value={formData.password}
+            onChange={handleInputChange}
+            className={`w-full px-4 py-3 text-lg border ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          )}
+        </div>
 
-          <button
-            type="submit"
-            className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-          >
-            Criar Conta
-          </button>
-          <div className="text-center mt-4">
-            <p className="text-gray-600 text-sm">
-              Já tem conta?{" "}
-              <Link
-                to="/login"
-                className="text-green-600 hover:text-green-800 font-bold"
-              >
-                Faça login
-              </Link>
-            </p>
-          </div>
-        </form>
-      </div>
+        <button
+          type="submit"
+          className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+        >
+          Criar Conta
+        </button>
+        <div className="text-center mt-4">
+          <p className="text-gray-600 text-sm">
+            Já tem conta?{" "}
+            <Link
+              to="/login"
+              className="text-green-600 hover:text-green-800 font-bold"
+            >
+              Faça login
+            </Link>
+          </p>
+        </div>
+      </form>
     </div>
   );
 };

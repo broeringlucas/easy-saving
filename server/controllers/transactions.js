@@ -2,7 +2,7 @@ const db = require("../models/transaction.js");
 
 const createTransaction = async (req, res) => {
   try {
-    const { amount, description, category, user, type, timestamp } = req.body;
+    const { amount, description, category, user, type, date } = req.body;
 
     await db.create({
       amount: amount,
@@ -10,7 +10,7 @@ const createTransaction = async (req, res) => {
       category_id: category,
       user_id: user,
       type: type,
-      timestamp: timestamp || new Date(),
+      date: date || new Date(),
     });
     return res
       .status(201)
@@ -49,7 +49,7 @@ const getTransactionsByUser = async (req, res) => {
       const startDate = new Date();
       startDate.setMonth(startDate.getMonth() - months);
 
-      whereClause += "AND DATE(t.timestamp) >= DATE(:startDate)";
+      whereClause += "AND DATE(t.date) >= DATE(:startDate)";
       replacements.startDate = startDate.toISOString().split("T")[0];
     }
     const result = await db.sequelize.query(
@@ -62,7 +62,7 @@ const getTransactionsByUser = async (req, res) => {
       FROM transactions t
       LEFT JOIN categories c ON t.category_id = c.category_id
       ${whereClause}
-      ORDER BY t.timestamp DESC
+      ORDER BY t.date DESC
       `,
       {
         replacements,
@@ -89,19 +89,19 @@ const getMonthlySummary = async (req, res) => {
       const startDate = new Date();
       startDate.setMonth(startDate.getMonth() - months);
 
-      whereClause += "AND DATE(t.timestamp) >= DATE(:startDate)";
+      whereClause += "AND DATE(t.date) >= DATE(:startDate)";
       replacements.startDate = startDate.toISOString().split("T")[0];
     }
 
     const result = await db.sequelize.query(
       `
       SELECT 
-        to_char(t.timestamp, 'YYYY-MM') AS month,
+        to_char(t.date, 'YYYY-MM') AS month,
         COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
         COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
       FROM transactions t
       ${whereClause}
-      GROUP BY to_char(t.timestamp, 'YYYY-MM')
+      GROUP BY to_char(t.date, 'YYYY-MM')
       ORDER BY month DESC
       `,
       {

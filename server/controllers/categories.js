@@ -122,7 +122,7 @@ const getTotalSpentByCategory = async (req, res) => {
       const startDate = new Date();
       startDate.setMonth(startDate.getMonth() - months);
 
-      whereClause = "AND DATE(t.timestamp) >= DATE(:startDate)";
+      whereClause = "AND DATE(t.date) >= DATE(:startDate)";
       replacements.startDate = startDate.toISOString().split("T")[0];
     }
 

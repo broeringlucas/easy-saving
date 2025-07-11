@@ -12,7 +12,7 @@ const Transaction = db.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    timestamp: {
+    date: {
       type: Sequelize.DATE,
       allowNull: false,
     },

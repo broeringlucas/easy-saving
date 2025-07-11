@@ -39,7 +39,7 @@ const TransactionCard = ({ transaction, onDelete }) => {
         </div>
         <div className="w-[20%] text-right pr-4">
           <p className="text-[15px] text-black">
-            {formatDate(transaction.timestamp)}
+            {formatDate(transaction.date)}
           </p>
         </div>
       </div>
