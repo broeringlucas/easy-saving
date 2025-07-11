@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ErrorMessage from "./ErrorMessage";
 
 import { CategoryService } from "../services/CategoryService";
 
@@ -16,7 +17,7 @@ const CategoryForm = ({
     user: user.user_id,
   });
   const [errors, setErrors] = useState({ name: "" });
-  const [formError, setFormError] = useState(null);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     if (isEdit && category) {
@@ -34,7 +35,7 @@ const CategoryForm = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    if (formError) setFormError(null);
+    if (formError) setFormError("");
   };
 
   const validateForm = () => {
@@ -107,7 +108,7 @@ const CategoryForm = ({
       }
 
       setErrors({ name: "" });
-      setFormError(null);
+      setFormError("");
       if (onClose) onClose();
     } catch (error) {
       console.error(error);
@@ -124,18 +125,15 @@ const CategoryForm = ({
       onSubmit={handleSubmit}
       className="max-w-md mx-auto p-6 bg-white rounded-lg space-y-4"
     >
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+      <h2 className="text-2xl font-bold text-gray-800 mb-1 text-center">
         {isEdit ? "Editar Categoria" : "Nova Categoria"}
       </h2>
 
-      {formError && (
-        <div className="p-3 bg-red-100 text-red-700 rounded-md mb-4">
-          {formError}
-        </div>
-      )}
-
-      <div>
-        <label className="block text-gray-700 text-sm font-bold mb-2">
+      <div className="min-h-[50px] mb-1">
+        <ErrorMessage message={formError} />
+      </div>
+      <div className="relative pb-1">
+        <label className="block text-gray-700 text-sm font-bold mb-1">
           Nome:
         </label>
         <input
@@ -150,12 +148,11 @@ const CategoryForm = ({
           placeholder="Ex: Alimentação"
         />
         {errors.name && (
-          <p className="text-red-500 text-xs italic mt-1">{errors.name}</p>
+          <p className="absolute text-red-500 text-xs">{errors.name}</p>
         )}
       </div>
-
       <div className="space-y-3">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
+        <label className="block text-gray-700 text-sm font-bold mb-1">
           Cor:
         </label>
         <div className="flex items-center gap-4">
@@ -193,7 +190,6 @@ const CategoryForm = ({
           </div>
         </div>
       </div>
-
       <button
         type="submit"
         className={`w-full mt-4 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${

@@ -22,8 +22,7 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
-
-  const [message, setMessage] = useState("");
+  const [formError, setFormError] = useState("");
 
   const validateAndFormatDate = (value) => {
     const cleaned = value.replace(/\D/g, "");
@@ -144,7 +143,6 @@ const Register = () => {
 
     if (name === "birthday") {
       if (value.replace(/\D/g, "").length > 8) return;
-
       processedValue = validateAndFormatDate(value);
     }
 
@@ -154,14 +152,14 @@ const Register = () => {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
 
-    if (message) setMessage("");
+    if (formError) setFormError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      setMessage("Preencha todos os campos corretamente.");
+      setFormError("Preencha todos os campos corretamente.");
       return;
     }
 
@@ -179,13 +177,15 @@ const Register = () => {
         formData.email,
         formData.password
       );
+
       navigate("/login");
-      setMessage(response.message || "Cadastro realizado com sucesso!");
+      setFormError(
+        "Cadastro realizado com sucesso! Faça login para continuar."
+      );
     } catch (error) {
       console.error(error.response?.message || "Erro no cadastro");
-      setMessage(
+      setFormError(
         error.response?.data?.message ||
-          error.response?.message ||
           "Erro ao realizar cadastro. Tente novamente."
       );
     }
@@ -193,14 +193,15 @@ const Register = () => {
 
   return (
     <div className="w-full md:w-1/2 flex items-center justify-center p-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 space-y-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 space-y-4">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
           Criar Conta
         </h2>
 
-        <ErrorMessage message={message} />
-
-        <div>
+        <div className="min-h-[50px]">
+          <ErrorMessage message={formError} />
+        </div>
+        <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
             Nome Completo:
           </label>
@@ -215,11 +216,10 @@ const Register = () => {
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            <p className="absolute text-red-500 text-xs mt-1">{errors.name}</p>
           )}
         </div>
-
-        <div>
+        <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
             Data de Nascimento:
           </label>
@@ -235,11 +235,12 @@ const Register = () => {
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
           {errors.birthday && (
-            <p className="text-red-500 text-sm mt-1">{errors.birthday}</p>
+            <p className="absolute text-red-500 text-xs mt-1">
+              {errors.birthday}
+            </p>
           )}
         </div>
-
-        <div>
+        <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
             Telefone:
           </label>
@@ -254,11 +255,10 @@ const Register = () => {
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
           {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            <p className="absolute text-red-500 text-xs mt-1">{errors.phone}</p>
           )}
         </div>
-
-        <div>
+        <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
             Email:
           </label>
@@ -273,11 +273,10 @@ const Register = () => {
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            <p className="absolute text-red-500 text-xs mt-1">{errors.email}</p>
           )}
         </div>
-
-        <div>
+        <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
             Senha:
           </label>
@@ -292,17 +291,20 @@ const Register = () => {
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            <p className="absolute text-red-500 text-xs mt-1">
+              {errors.password}
+            </p>
           )}
         </div>
-
-        <button
-          type="submit"
-          className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-        >
-          Criar Conta
-        </button>
-        <div className="text-center mt-4">
+        <div className="pt-1">
+          <button
+            type="submit"
+            className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          >
+            Criar Conta
+          </button>
+        </div>
+        <div className="text-center pt-1">
           <p className="text-gray-600 text-sm">
             Já tem conta?{" "}
             <Link
