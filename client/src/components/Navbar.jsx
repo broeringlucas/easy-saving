@@ -87,13 +87,13 @@ export default function Navbar() {
                   onClick={() => navigate("/profile")}
                   className="w-full px-4 py-3 text-left hover:bg-gray-100 flex items-center"
                 >
-                  <FiUser className="mr-2" /> Perfil
+                  <FiUser className="mr-2" /> Profile
                 </button>
                 <button
                   onClick={logout}
                   className="w-full px-4 py-3 text-left hover:bg-gray-100 flex items-center"
                 >
-                  <FiLogOut className="mr-2" /> Sair
+                  <FiLogOut className="mr-2" /> Quit
                 </button>
               </div>
             )}
@@ -106,7 +106,7 @@ export default function Navbar() {
         }`}
       >
         <div className="flex justify-between items-center p-4 bg-p-green shadow-md">
-          <h2 className="text-[24px] font-bold text-white">Menu</h2>
+          <h2 className="ml-2 text-[24px] text-white">Menu</h2>
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="p-1 hover:bg-s-green rounded-lg"

@@ -62,7 +62,7 @@ const Home = () => {
   const balance = incomeTotal - expenseTotal;
 
   return (
-    <div className="mt-10 px-6 lg:px-12">
+    <div className="mt-10 px-6 lg:px-10">
       <IntervalSelect value={selectedPeriod} onChange={setSelectedPeriod} />
       <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
         <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-green">
@@ -115,7 +115,7 @@ const Home = () => {
           className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
-          Nova Transação
+          New Transaction
         </button>
 
         <button
@@ -123,7 +123,7 @@ const Home = () => {
           className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
-          Nova Categoria
+          New Category
         </button>
       </div>
       {showTransactionForm && (
@@ -152,13 +152,15 @@ const Home = () => {
         <div className="w-full max-w-4xl px-4">
           {transactions.length > 0 && (
             <div className="hidden md:flex mb-4 p-4 bg-gray-100 rounded-lg justify-between items-center">
-              <div className=" text-gray-500 font-semibold pr-4">Categoria</div>
-              <div className=" text-gray-500 font-semibold pr-4">Descrição</div>
-              <div className=" text-gray-500 font-semibold text-right pr-4">
-                Valor
+              <div className=" text-gray-500 font-semibold pr-4">Category</div>
+              <div className=" text-gray-500 font-semibold pr-4">
+                Description
               </div>
               <div className=" text-gray-500 font-semibold text-right pr-4">
-                Data
+                Value
+              </div>
+              <div className=" text-gray-500 font-semibold text-right pr-4">
+                Date
               </div>
             </div>
           )}

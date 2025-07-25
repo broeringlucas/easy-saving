@@ -61,12 +61,7 @@ const Login = () => {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
 
-    if (name === "email" && value.trim() && !/\S+@\S+\.\S+/.test(value)) {
-      setErrors((prev) => ({ ...prev, email: "Email inválido" }));
-    } else if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-
+    setErrors((prev) => ({ ...prev, [name]: "" }));
     if (formError) setFormError("");
   };
 
@@ -88,7 +83,6 @@ const Login = () => {
               Email:
             </label>
             <input
-              type="email"
               name="email"
               placeholder="Email"
               value={email}

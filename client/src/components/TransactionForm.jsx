@@ -3,7 +3,7 @@ import { Listbox } from "@headlessui/react";
 
 import { CategoryService } from "../services/CategoryService";
 import { TransactionService } from "../services/TransactionService";
-import ErrorMessage from "./ErrorMessage"; // Importe o componente
+import ErrorMessage from "./ErrorMessage";
 
 const TransactionForm = ({ onTransactionAdded, user }) => {
   const [transaction, setTransaction] = useState({
@@ -64,17 +64,17 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
     let isValid = true;
 
     if (transaction.amount <= 0) {
-      newErrors.amount = "O valor deve ser maior que zero";
+      newErrors.amount = "Value must be greater than zero";
       isValid = false;
     }
 
     if (!transaction.description.trim()) {
-      newErrors.description = "A descrição é obrigatória";
+      newErrors.description = "Description is required";
       isValid = false;
     }
 
     if (transaction.category === 0) {
-      newErrors.category = "Selecione uma categoria";
+      newErrors.category = "Select a category";
       isValid = false;
     }
 
@@ -86,7 +86,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      setFormError("Preencha todos os campos obrigatórios.");
+      setFormError("Fill out all fields correctly.");
       return;
     }
 
@@ -108,7 +108,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
       setFormError("");
       onTransactionAdded();
     } catch (error) {
-      setFormError("Erro ao criar transação. Tente novamente.");
+      setFormError("Error creating transaction. Try again.");
     }
   };
 
@@ -119,7 +119,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
         className="max-w-md mx-auto p-6 bg-white rounded-lg"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-1 text-center">
-          Nova Transação
+          New Transaction
         </h2>
         <div className="min-h-[50px] mb-1">
           <ErrorMessage message={formError} />
@@ -127,7 +127,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
         <div className="space-y-4">
           <div className="relative pb-1">
             <label className="block text-gray-700 text-sm font-bold mb-1">
-              Valor:
+              Value:
             </label>
             <input
               type="number"
@@ -147,7 +147,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
           </div>
           <div className="relative pb-1">
             <label className="block text-gray-700 text-sm font-bold mb-1">
-              Descrição:
+              Description:
             </label>
             <input
               type="text"
@@ -158,6 +158,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
                 errors.description ? "border-red-500" : "border-gray-300"
               } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
               maxLength={100}
+              placeholder="Description"
             />
             {errors.description && (
               <p className="absolute text-red-500 text-xs">
@@ -167,7 +168,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
           </div>
           <div className="relative pb-1">
             <label className="block text-gray-700 text-sm font-bold mb-1">
-              Tipo:
+              Type:
             </label>
             <select
               name="type"
@@ -178,8 +179,8 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
                 errors.type ? "border-red-500" : "border-gray-300"
               } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
-              <option value="0">Despesa</option>
-              <option value="1">Receita</option>
+              <option value="0">Expense</option>
+              <option value="1">Income</option>
             </select>
             {errors.type && (
               <p className="absolute text-red-500 text-xs">{errors.type}</p>
@@ -187,71 +188,88 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
           </div>
           <div className="relative pb-1">
             <label className="block text-gray-700 text-sm font-bold mb-1">
-              Categoria:
+              Category:
             </label>
-            <Listbox
-              value={transaction.category}
-              onChange={handleCategoryChange}
-            >
-              <div className="relative">
-                <Listbox.Button
-                  className={`w-full px-3 py-2 border ${
-                    errors.category ? "border-red-500" : "border-gray-300"
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left`}
-                >
-                  {transaction.category ? (
-                    <div className="flex items-center">
-                      <span
-                        className="inline-block w-3 h-3 rounded-full mr-2"
-                        style={{
-                          backgroundColor: categories.find(
-                            (c) => c.category_id === transaction.category
-                          )?.color,
-                        }}
-                      ></span>
-                      {
-                        categories.find(
-                          (c) => c.category_id === transaction.category
-                        )?.name
-                      }
-                    </div>
-                  ) : (
-                    "Selecione uma categoria"
-                  )}
-                </Listbox.Button>
-                <Listbox.Options className="absolute z-20 w-full mt-1 bg-white shadow-lg max-h-60 rounded-md py-1 ring-1 ring-black ring-opacity-5 overflow-auto">
-                  {categories.map((category) => (
-                    <Listbox.Option
-                      key={category.category_id}
-                      value={category.category_id}
-                      className={({ active }) =>
-                        `cursor-default select-none relative py-2 pl-3 pr-4 ${
-                          active ? "bg-blue-100 text-blue-900" : "text-gray-900"
-                        }`
-                      }
-                    >
+            {categories.length === 0 ? (
+              <div className="w-full px-3 py-2 border border-red-300 bg-red-50 rounded-md text-center">
+                <p className="text-red-600 text-sm">
+                  No categories created yet.
+                </p>
+              </div>
+            ) : (
+              <Listbox
+                value={transaction.category}
+                onChange={handleCategoryChange}
+              >
+                <div className="relative">
+                  <Listbox.Button
+                    className={`w-full px-3 py-2 border ${
+                      errors.category ? "border-red-500" : "border-gray-300"
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left`}
+                  >
+                    {transaction.category ? (
                       <div className="flex items-center">
                         <span
                           className="inline-block w-3 h-3 rounded-full mr-2"
-                          style={{ backgroundColor: category.color }}
+                          style={{
+                            backgroundColor: categories.find(
+                              (c) => c.category_id === transaction.category
+                            )?.color,
+                          }}
                         ></span>
-                        <span className="block truncate">{category.name}</span>
+                        {
+                          categories.find(
+                            (c) => c.category_id === transaction.category
+                          )?.name
+                        }
                       </div>
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
-            {errors.category && (
+                    ) : (
+                      "Select a category"
+                    )}
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-20 w-full mt-1 bg-white shadow-lg max-h-60 rounded-md py-1 ring-1 ring-black ring-opacity-5 overflow-auto">
+                    {categories.map((category) => (
+                      <Listbox.Option
+                        key={category.category_id}
+                        value={category.category_id}
+                        className={({ active }) =>
+                          `cursor-default select-none relative py-2 pl-3 pr-4 ${
+                            active
+                              ? "bg-blue-100 text-blue-900"
+                              : "text-gray-900"
+                          }`
+                        }
+                      >
+                        <div className="flex items-center">
+                          <span
+                            className="inline-block w-3 h-3 rounded-full mr-2"
+                            style={{ backgroundColor: category.color }}
+                          ></span>
+                          <span className="block truncate">
+                            {category.name}
+                          </span>
+                        </div>
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+            )}
+            {errors.category && categories.length > 0 && (
               <p className="absolute text-red-500 text-xs">{errors.category}</p>
             )}
           </div>
           <div className="flex gap-2 pt-4">
             <button
               type="submit"
-              className="flex-1 bg-p-green hover:bg-s-green text-white font-medium py-2 px-4 rounded-md transition"
+              disabled={categories.length === 0}
+              className={`flex-1 ${
+                categories.length === 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-p-green hover:bg-s-green"
+              } text-white font-medium py-2 px-4 rounded-md transition`}
             >
-              Criar
+              Create
             </button>
           </div>
         </div>

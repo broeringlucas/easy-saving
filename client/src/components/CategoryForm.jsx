@@ -43,7 +43,7 @@ const CategoryForm = ({
     let isValid = true;
 
     if (!formData.name.trim()) {
-      newErrors.name = "O nome da categoria é obrigatório";
+      newErrors.name = "Name is required";
       isValid = false;
     }
 
@@ -54,7 +54,7 @@ const CategoryForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      setFormError("Preencha todos os campos obrigatórios.");
+      setFormError("Please fill out all fields correctly.");
       return;
     }
 
@@ -68,7 +68,7 @@ const CategoryForm = ({
       if (!isEdit && existing.length > 0) {
         setErrors((prev) => ({
           ...prev,
-          name: "Já existe uma categoria com este nome.",
+          name: "Category with this name already exists.",
         }));
         return;
       }
@@ -79,7 +79,7 @@ const CategoryForm = ({
       ) {
         setErrors((prev) => ({
           ...prev,
-          name: "Já existe uma categoria com este nome.",
+          name: "Category with this name already exists.",
         }));
         return;
       }
@@ -114,8 +114,8 @@ const CategoryForm = ({
       console.error(error);
       setFormError(
         isEdit
-          ? "Erro ao atualizar categoria. Tente novamente."
-          : "Erro ao criar categoria. Tente novamente."
+          ? "Error updating category. Please try again."
+          : "Error creating category. Please try again."
       );
     }
   };
@@ -126,7 +126,7 @@ const CategoryForm = ({
       className="max-w-md mx-auto p-6 bg-white rounded-lg space-y-4"
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-1 text-center">
-        {isEdit ? "Editar Categoria" : "Nova Categoria"}
+        {isEdit ? "Edit Category" : "New Category"}
       </h2>
 
       <div className="min-h-[50px] mb-1">
@@ -134,7 +134,7 @@ const CategoryForm = ({
       </div>
       <div className="relative pb-1">
         <label className="block text-gray-700 text-sm font-bold mb-1">
-          Nome:
+          Name:
         </label>
         <input
           type="text"
@@ -145,7 +145,7 @@ const CategoryForm = ({
             errors.name ? "border-red-500" : "border-gray-300"
           } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           maxLength={50}
-          placeholder="Ex: Alimentação"
+          placeholder="Ex: Food"
         />
         {errors.name && (
           <p className="absolute text-red-500 text-xs">{errors.name}</p>
@@ -153,7 +153,7 @@ const CategoryForm = ({
       </div>
       <div className="space-y-3">
         <label className="block text-gray-700 text-sm font-bold mb-1">
-          Cor:
+          Color:
         </label>
         <div className="flex items-center gap-4">
           <div
@@ -198,7 +198,7 @@ const CategoryForm = ({
             : "bg-p-green hover:bg-s-green"
         }`}
       >
-        {isEdit ? "Salvar Alterações" : "Criar Categoria"}
+        {isEdit ? "Save" : "Create"}
       </button>
     </form>
   );

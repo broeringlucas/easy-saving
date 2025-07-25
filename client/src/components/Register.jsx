@@ -38,6 +38,20 @@ const Register = () => {
     return cleaned;
   };
 
+  const formatPhone = (value) => {
+    const cleaned = value.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
+
+    if (!match) return value;
+
+    let formatted = "";
+    if (match[1]) formatted = `(${match[1]}`;
+    if (match[2]) formatted += `) ${match[2]}`;
+    if (match[3]) formatted += `-${match[3]}`;
+
+    return formatted;
+  };
+
   const validateForm = () => {
     const newErrors = {
       name: "",
@@ -111,8 +125,8 @@ const Register = () => {
       isValid = false;
     } else {
       const phoneDigits = formData.phone.replace(/\D/g, "");
-      if (phoneDigits.length < 10) {
-        newErrors.phone = "Telefone inválido (mínimo 10 dígitos)";
+      if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+        newErrors.phone = "Telefone inválido (formato: (99) 99999-9999)";
         isValid = false;
       }
     }
@@ -144,6 +158,9 @@ const Register = () => {
     if (name === "birthday") {
       if (value.replace(/\D/g, "").length > 8) return;
       processedValue = validateAndFormatDate(value);
+    } else if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 11);
+      processedValue = formatPhone(cleaned);
     }
 
     setFormData((prev) => ({ ...prev, [name]: processedValue }));
@@ -170,7 +187,7 @@ const Register = () => {
         "0"
       )}`;
 
-      const response = await UserService.register(
+      await UserService.register(
         formData.name,
         isoDate,
         formData.phone,
@@ -250,6 +267,7 @@ const Register = () => {
             placeholder="(99) 99999-9999"
             value={formData.phone}
             onChange={handleInputChange}
+            maxLength={15}
             className={`w-full px-4 py-3 text-lg border ${
               errors.phone ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -263,7 +281,6 @@ const Register = () => {
             Email:
           </label>
           <input
-            type="email"
             name="email"
             placeholder="Email"
             value={formData.email}

@@ -177,20 +177,20 @@ const Dashboard = () => {
   }, [categories, monthlySummary]);
 
   return (
-    <div className="mt-10 px-6 lg:px-12">
+    <div className="mt-10 px-6 lg:px-10">
       <IntervalSelect value={selectedPeriod} onChange={setSelectedPeriod} />
       <div className="flex flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-2/5 min-w-0">
           <div className="flex justify-between items-center gap-4 pb-4 border-b border-gray-300">
             <p className="flex items-center ml-2 text-lg font-semibold">
-              Categorias
+              Categories
             </p>
             <button
               onClick={() => setShowCategoryForm(!showCategoryForm)}
               className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
             >
               <span className="mr-2 text-xl">+</span>
-              Nova Categoria
+              New Category
             </button>
             {showCategoryForm && (
               <FormModal onClose={() => setShowCategoryForm(false)}>
@@ -204,14 +204,13 @@ const Dashboard = () => {
               </FormModal>
             )}
           </div>
-
           <div className="max-h-[650px] overflow-y-auto overflow-x-hidden pr-10">
             {categories.length > 0 && (
               <div className="hidden md:flex mb-4 p-4 bg-gray-100 rounded-lg justify-between items-center">
-                <p className="text-gray-600 font-semibold">Nome</p>
-                <p className="text-gray-600 font-semibold">Receita</p>
-                <p className="text-gray-600 font-semibold">Despesa</p>
-                <p className="text-gray-600 font-semibold">Balanço</p>
+                <p className="text-gray-600 font-semibold">Name</p>
+                <p className="text-gray-600 font-semibold">Income</p>
+                <p className="text-gray-600 font-semibold">Expanse</p>
+                <p className="text-gray-600 font-semibold">Balance</p>
               </div>
             )}
             {categories.map((category) => (
@@ -228,7 +227,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
               <h3 className="text-md font-semibold mb-3 text-gray-700">
-                Distribuição de Gastos
+                Expanse Distribution
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingCategories ? (
@@ -278,7 +277,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-gray-500">
-                      Nenhum dado disponível para gastos
+                      No data for expanse distribution
                     </p>
                   </div>
                 )}
@@ -286,7 +285,7 @@ const Dashboard = () => {
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
               <h3 className="text-md font-semibold mb-3 text-gray-700">
-                Distribuição de Receita
+                Income Distribution
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingCategories ? (
@@ -333,7 +332,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-gray-500">
-                      Nenhum dado disponível para receitas
+                      No data for income distribution
                     </p>
                   </div>
                 )}
@@ -341,7 +340,7 @@ const Dashboard = () => {
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:col-span-2">
               <h3 className="text-md font-semibold mb-3 text-gray-700">
-                Receitas e Despesas Mensais
+                Monthly Summary
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingMonthly ? (
@@ -394,7 +393,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-gray-500">
-                      Nenhum dado mensal disponível
+                      No data available for monthly summary
                     </p>
                   </div>
                 )}
@@ -405,23 +404,24 @@ const Dashboard = () => {
       </div>
       {showDeleteModal && categoryToDelete && (
         <FormModal onClose={() => setShowDeleteModal(false)}>
-          <div className="p-6 bg-white rounded-lg max-w-md mx-auto">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800">
-              Confirmar exclusão
-            </h2>
-            <p className="text-gray-700 mb-6">
-              Tem certeza que deseja excluir a categoria{" "}
-              <span className="font-medium">{categoryToDelete.name}</span>?
-              <br />
-              Todas as transações associadas a esta categoria serão removidas.
-            </p>
-            <div className="flex justify-end gap-3">
+          <div className="rounded-lg max-w-md mx-auto w-full">
+            <div className="p-4 rounded-lg">
+              <p className=" text-base text-center mt-2">
+                Todas as transações associadas a categoria
+                <span className="text-red-600 font-bold">
+                  {" "}
+                  {categoryToDelete.name}{" "}
+                </span>
+                serão removidas.
+              </p>
+            </div>
+            <div className="flex justify-center gap-3">
               <button
                 onClick={() => {
                   setShowDeleteModal(false);
                   setCategoryToDelete(null);
                 }}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium"
               >
                 Cancelar
               </button>
@@ -429,7 +429,7 @@ const Dashboard = () => {
                 onClick={() =>
                   handleDeleteCategory(categoryToDelete.category_id)
                 }
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                className="px-5 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
               >
                 Confirmar
               </button>
