@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
+
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const Profile = () => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
-      <div className="w-12 h-12 border-4 border-p-green border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  );
+  return <LoadingSpinner />;
 };
+
 export default Profile;

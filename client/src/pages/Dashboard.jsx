@@ -17,6 +17,7 @@ import CategoryCard from "../components/CategoryCard";
 import FormModal from "../components/FormModal";
 import CategoryForm from "../components/CategoryForm";
 import IntervalSelect from "../components/IntervalSelect";
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import { UserService } from "../services/UserService";
 import { CategoryService } from "../services/CategoryService";
 import { TransactionService } from "../services/TransactionService";
@@ -110,11 +111,16 @@ const Dashboard = () => {
   };
 
   const prepareChartData = (categories, monthlyData) => {
+    const formatMonthLabel = (monthString) => {
+      const [year, month] = monthString.split("-");
+      return `${month}/${year}`;
+    };
+
     const expenseData = {
       labels: categories.map((cat) => cat.name),
       datasets: [
         {
-          label: "Gastos por Categoria",
+          label: "Expense per Category",
           data: categories.map((cat) => cat.total_expense),
           backgroundColor: categories.map((cat) => cat.color),
           borderColor: "#fff",
@@ -127,7 +133,7 @@ const Dashboard = () => {
       labels: categories.map((cat) => cat.name),
       datasets: [
         {
-          label: "Receita por Categoria",
+          label: "Income per Category",
           data: categories.map((cat) => cat.total_income),
           backgroundColor: categories.map((cat) => cat.color),
           borderColor: "#fff",
@@ -137,18 +143,18 @@ const Dashboard = () => {
     };
 
     const monthlyBarData = {
-      labels: monthlyData.map((item) => item.month),
+      labels: monthlyData.map((item) => formatMonthLabel(item.month)),
       datasets: [
         {
-          label: "Receitas",
+          label: "Income",
           data: monthlyData.map((item) => item.total_income),
           backgroundColor: "#2ecc71",
           borderRadius: 4,
         },
         {
-          label: "Despesas",
+          label: "Expense",
           data: monthlyData.map((item) => item.total_expense),
-          backgroundColor: "#e74c3c",
+          backgroundColor: "#ef4444",
           borderRadius: 4,
         },
       ],
@@ -182,14 +188,14 @@ const Dashboard = () => {
       <div className="flex flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-2/5 min-w-0">
           <div className="flex justify-between items-center gap-4 pb-4 border-b border-gray-300">
-            <p className="flex items-center ml-2 text-lg font-semibold">
+            <p className="flex items-center ml-2 text-lg font-semibold text-text-color">
               Categories
             </p>
             <button
               onClick={() => setShowCategoryForm(!showCategoryForm)}
-              className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
+              className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-orange text-white hover:bg-s-orange transition-colors duration-300"
             >
-              <span className="mr-2 text-xl">+</span>
+              <span className="mr-2 text-xl text-text-white">+</span>
               New Category
             </button>
             {showCategoryForm && (
@@ -206,11 +212,11 @@ const Dashboard = () => {
           </div>
           <div className="max-h-[650px] overflow-y-auto overflow-x-hidden pr-10">
             {categories.length > 0 && (
-              <div className="hidden md:flex mb-4 p-4 bg-gray-100 rounded-lg justify-between items-center">
-                <p className="text-gray-600 font-semibold">Name</p>
-                <p className="text-gray-600 font-semibold">Income</p>
-                <p className="text-gray-600 font-semibold">Expanse</p>
-                <p className="text-gray-600 font-semibold">Balance</p>
+              <div className="hidden md:flex mb-4 p-4 bg-white rounded-lg justify-between items-center">
+                <p className="text-text-color font-semibold">Name</p>
+                <p className="text-text-color font-semibold">Income</p>
+                <p className="text-text-color font-semibold">Expanse</p>
+                <p className="text-text-color font-semibold">Balance</p>
               </div>
             )}
             {categories.map((category) => (
@@ -226,13 +232,13 @@ const Dashboard = () => {
         <div className="w-full lg:w-3/5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-              <h3 className="text-md font-semibold mb-3 text-gray-700">
+              <h3 className="text-md font-semibold mb-3 text-text-color">
                 Expanse Distribution
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingCategories ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-p-orange"></div>
                   </div>
                 ) : chartData.expenseData &&
                   chartData.expenseData.labels.length > 0 ? (
@@ -276,7 +282,7 @@ const Dashboard = () => {
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-500">
+                    <p className="text-text-color">
                       No data for expanse distribution
                     </p>
                   </div>
@@ -284,13 +290,13 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-              <h3 className="text-md font-semibold mb-3 text-gray-700">
+              <h3 className="text-md font-semibold mb-3 text-text-color">
                 Income Distribution
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingCategories ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-p-orange"></div>
                   </div>
                 ) : chartData.incomeData &&
                   chartData.incomeData.labels.length > 0 ? (
@@ -331,7 +337,7 @@ const Dashboard = () => {
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-500">
+                    <p className="text-text-color">
                       No data for income distribution
                     </p>
                   </div>
@@ -339,13 +345,13 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:col-span-2">
-              <h3 className="text-md font-semibold mb-3 text-gray-700">
+              <h3 className="text-md font-semibold mb-3 text-text-color">
                 Monthly Summary
               </h3>
               <div className="flex-1" style={{ minHeight: "250px" }}>
                 {loadingMonthly ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-p-orange"></div>
                   </div>
                 ) : chartData.monthlyBarData &&
                   chartData.monthlyBarData.labels.length > 0 ? (
@@ -392,7 +398,7 @@ const Dashboard = () => {
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-500">
+                    <p className="text-text-color">
                       No data available for monthly summary
                     </p>
                   </div>
@@ -404,37 +410,15 @@ const Dashboard = () => {
       </div>
       {showDeleteModal && categoryToDelete && (
         <FormModal onClose={() => setShowDeleteModal(false)}>
-          <div className="rounded-lg max-w-md mx-auto w-full">
-            <div className="p-4 rounded-lg">
-              <p className=" text-base text-center mt-2">
-                Todas as transações associadas a categoria
-                <span className="text-red-600 font-bold">
-                  {" "}
-                  {categoryToDelete.name}{" "}
-                </span>
-                serão removidas.
-              </p>
-            </div>
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setCategoryToDelete(null);
-                }}
-                className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() =>
-                  handleDeleteCategory(categoryToDelete.category_id)
-                }
-                className="px-5 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
+          <DeleteConfirmationModal
+            itemName={categoryToDelete.name}
+            onCancel={() => {
+              setShowDeleteModal(false);
+              setCategoryToDelete(null);
+            }}
+            onConfirm={() => handleDeleteCategory(categoryToDelete.category_id)}
+            description="All transactions associated with this category will be removed."
+          />
         </FormModal>
       )}
       {showEditModal && categoryToEdit && (

@@ -8,8 +8,12 @@ const LoginPage = () => {
           <Login />
         </div>
       </div>
-      <div className="w-[30%] relative bg-p-green shadow-[inset_-8px_0_15px_-10px_rgba(0,0,0,0.2)]">
-        <div className="absolute inset-0 bg-gradient-to-r from-s-green/10 to-transparent"></div>
+      <div className="w-[30%] relative bg-p-orange overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/10"></div>
+        <div className="absolute bottom-1/4 -left-10 w-40 h-40 rounded-full bg-white/15"></div>
+        <div className="absolute top-1/3 right-1/4 w-24 h-24 rounded-full bg-white/20"></div>
+        <div className="absolute bottom-10 right-10 w-16 h-16 rounded-full bg-white/10"></div>
+        <div className="absolute top-10 left-1/2 w-20 h-20 rounded-full bg-white/15"></div>
       </div>
     </div>
   );

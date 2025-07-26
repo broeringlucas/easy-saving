@@ -1,182 +1,119 @@
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import { UserService } from "../services/UserService";
 import ErrorMessage from "./ErrorMessage";
+import UseForm from "../hooks/UseForm";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     name: "",
     birthday: "",
     phone: "",
     email: "",
     password: "",
-  });
+  };
 
-  const [errors, setErrors] = useState({
-    name: "",
-    birthday: "",
-    phone: "",
-    email: "",
-    password: "",
-  });
+  const formatters = {
+    birthday: (value) => {
+      const cleaned = value.replace(/\D/g, "");
+      if (cleaned.length > 8) return value.substring(0, 10);
+
+      if (cleaned.length > 4) {
+        return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(
+          4,
+          8
+        )}`;
+      } else if (cleaned.length > 2) {
+        return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+      }
+      return cleaned;
+    },
+    phone: (value) => {
+      const cleaned = value.replace(/\D/g, "");
+      const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
+      if (!match) return value;
+
+      let formatted = "";
+      if (match[1]) formatted = `(${match[1]}`;
+      if (match[2]) formatted += `) ${match[2]}`;
+      if (match[3]) formatted += `-${match[3]}`;
+
+      return formatted;
+    },
+  };
+
+  const validators = {
+    name: (value) => {
+      if (!value.trim()) return "Full name is required";
+      const nameParts = value.trim().split(" ");
+      if (nameParts.length < 2) return "Please enter your full name";
+      return "";
+    },
+    birthday: (value) => {
+      if (!value.trim()) return "Birth date is required";
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value))
+        return "Invalid format (dd/mm/yyyy)";
+
+      const [day, month, year] = value.split("/").map(Number);
+      const birthDate = new Date(year, month - 1, day);
+      const currentDate = new Date();
+
+      if (
+        birthDate.getDate() !== day ||
+        birthDate.getMonth() !== month - 1 ||
+        birthDate.getFullYear() !== year
+      )
+        return "Invalid date";
+
+      if (birthDate > currentDate) return "Birth date cannot be in the future";
+
+      let age = currentDate.getFullYear() - birthDate.getFullYear();
+      const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
+      )
+        age--;
+
+      if (age < 13) return "You must be at least 13 years old";
+      if (age > 115) return "Invalid age (maximum 115 years)";
+
+      return "";
+    },
+    phone: (value) => {
+      if (!value.trim()) return "Phone number is required";
+      const phoneDigits = value.replace(/\D/g, "");
+      if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+        return "Invalid phone (format: (99) 99999-9999)";
+      }
+      return "";
+    },
+    email: (value) => {
+      if (!value.trim()) return "Email is required";
+      if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email format";
+      return "";
+    },
+    password: (value) => {
+      if (!value.trim()) return "Password is required";
+      if (value.length < 8) return "Password must be at least 8 characters";
+      return "";
+    },
+  };
+
+  const {
+    formData,
+    errors,
+    formError,
+    setFormError,
+    handleChange,
+    validateForm,
+  } = UseForm(initialFormState, validators, formatters);
 
   const navigate = useNavigate();
-  const [formError, setFormError] = useState("");
-
-  const validateAndFormatDate = (value) => {
-    const cleaned = value.replace(/\D/g, "");
-
-    if (cleaned.length > 4) {
-      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(
-        4,
-        8
-      )}`;
-    } else if (cleaned.length > 2) {
-      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
-    }
-    return cleaned;
-  };
-
-  const formatPhone = (value) => {
-    const cleaned = value.replace(/\D/g, "");
-    const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
-
-    if (!match) return value;
-
-    let formatted = "";
-    if (match[1]) formatted = `(${match[1]}`;
-    if (match[2]) formatted += `) ${match[2]}`;
-    if (match[3]) formatted += `-${match[3]}`;
-
-    return formatted;
-  };
-
-  const validateForm = () => {
-    const newErrors = {
-      name: "",
-      birthday: "",
-      phone: "",
-      email: "",
-      password: "",
-    };
-
-    let isValid = true;
-
-    if (!formData.name.trim()) {
-      newErrors.name = "O nome completo é obrigatório";
-      isValid = false;
-    } else {
-      const nameParts = formData.name.trim().split(" ");
-      if (nameParts.length < 2) {
-        newErrors.name = "Por favor, informe seu nome completo";
-        isValid = false;
-      }
-    }
-
-    if (!formData.birthday.trim()) {
-      newErrors.birthday = "A data de nascimento é obrigatória";
-      isValid = false;
-    } else {
-      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(formData.birthday)) {
-        newErrors.birthday = "Formato inválido (dd/mm/yyyy)";
-        isValid = false;
-      } else {
-        const [day, month, year] = formData.birthday.split("/").map(Number);
-        const birthDate = new Date(year, month - 1, day);
-        const currentDate = new Date();
-
-        if (
-          birthDate.getDate() !== day ||
-          birthDate.getMonth() !== month - 1 ||
-          birthDate.getFullYear() !== year
-        ) {
-          newErrors.birthday = "Data inválida";
-          isValid = false;
-        } else {
-          if (birthDate > currentDate) {
-            newErrors.birthday = "A data de nascimento não pode ser futura";
-            isValid = false;
-          } else {
-            let age = currentDate.getFullYear() - birthDate.getFullYear();
-            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
-
-            if (
-              monthDiff < 0 ||
-              (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
-            ) {
-              age--;
-            }
-
-            if (age < 13) {
-              newErrors.birthday = "Você deve ter pelo menos 13 anos";
-              isValid = false;
-            } else if (age > 115) {
-              newErrors.birthday = "Idade inválida (máximo 115 anos)";
-              isValid = false;
-            }
-          }
-        }
-      }
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "O telefone é obrigatório";
-      isValid = false;
-    } else {
-      const phoneDigits = formData.phone.replace(/\D/g, "");
-      if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-        newErrors.phone = "Telefone inválido (formato: (99) 99999-9999)";
-        isValid = false;
-      }
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "O email é obrigatório";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email inválido";
-      isValid = false;
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = "A senha é obrigatória";
-      isValid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = "A senha deve ter pelo menos 8 caracteres";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    let processedValue = value;
-
-    if (name === "birthday") {
-      if (value.replace(/\D/g, "").length > 8) return;
-      processedValue = validateAndFormatDate(value);
-    } else if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 11);
-      processedValue = formatPhone(cleaned);
-    }
-
-    setFormData((prev) => ({ ...prev, [name]: processedValue }));
-
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-
-    if (formError) setFormError("");
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      setFormError("Preencha todos os campos corretamente.");
+    if (!(await validateForm())) {
+      setFormError("Please complete all required fields correctly");
       return;
     }
 
@@ -196,14 +133,12 @@ const Register = () => {
       );
 
       navigate("/login");
-      setFormError(
-        "Cadastro realizado com sucesso! Faça login para continuar."
-      );
+      setFormError("Registration successful! Please login to continue.");
     } catch (error) {
-      console.error(error.response?.message || "Erro no cadastro");
+      console.error("Registration failed:", error);
       setFormError(
         error.response?.data?.message ||
-          "Erro ao realizar cadastro. Tente novamente."
+          "Registration failed. Please try again later."
       );
     }
   };
@@ -212,7 +147,7 @@ const Register = () => {
     <div className="w-full md:w-1/2 flex items-center justify-center p-4">
       <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 space-y-4">
         <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
-          Criar Conta
+          Create Account
         </h2>
 
         <div className="min-h-[50px]">
@@ -220,14 +155,14 @@ const Register = () => {
         </div>
         <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
-            Nome Completo:
+            Full Name:
           </label>
           <input
             type="text"
             name="name"
-            placeholder="Nome Completo"
+            placeholder="First and Last Name"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className={`w-full px-4 py-3 text-lg border ${
               errors.name ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -238,14 +173,14 @@ const Register = () => {
         </div>
         <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
-            Data de Nascimento:
+            Birth Date:
           </label>
           <input
             type="text"
             name="birthday"
-            placeholder="dd/mm/aaaa"
+            placeholder="dd/mm/yyyy"
             value={formData.birthday}
-            onChange={handleInputChange}
+            onChange={handleChange}
             maxLength={10}
             className={`w-full px-4 py-3 text-lg border ${
               errors.birthday ? "border-red-500" : "border-gray-300"
@@ -259,14 +194,14 @@ const Register = () => {
         </div>
         <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
-            Telefone:
+            Phone:
           </label>
           <input
             type="tel"
             name="phone"
             placeholder="(99) 99999-9999"
             value={formData.phone}
-            onChange={handleInputChange}
+            onChange={handleChange}
             maxLength={15}
             className={`w-full px-4 py-3 text-lg border ${
               errors.phone ? "border-red-500" : "border-gray-300"
@@ -282,9 +217,9 @@ const Register = () => {
           </label>
           <input
             name="email"
-            placeholder="Email"
+            placeholder="your.email@example.com"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className={`w-full px-4 py-3 text-lg border ${
               errors.email ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -295,14 +230,14 @@ const Register = () => {
         </div>
         <div className="relative pb-1">
           <label className="block text-gray-700 text-base font-bold mb-2">
-            Senha:
+            Password:
           </label>
           <input
             type="password"
             name="password"
-            placeholder="Senha (mínimo 8 caracteres)"
+            placeholder="Password (min 8 characters)"
             value={formData.password}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className={`w-full px-4 py-3 text-lg border ${
               errors.password ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -316,19 +251,19 @@ const Register = () => {
         <div className="pt-1">
           <button
             type="submit"
-            className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+            className="w-full mt-4 bg-p-orange hover:bg-s-orange text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
           >
-            Criar Conta
+            Register
           </button>
         </div>
         <div className="text-center pt-1">
-          <p className="text-gray-600 text-sm">
-            Já tem conta?{" "}
+          <p className="text-text-color text-sm">
+            Already have an account?{" "}
             <Link
               to="/login"
-              className="text-green-600 hover:text-green-800 font-bold"
+              className="text-p-orange hover:text-s-orange font-bold"
             >
-              Faça login
+              Login
             </Link>
           </p>
         </div>

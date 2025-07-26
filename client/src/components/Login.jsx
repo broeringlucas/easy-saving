@@ -1,48 +1,39 @@
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import { UserService } from "../services/UserService";
 import ErrorMessage from "./ErrorMessage";
+import UseForm from "../hooks/UseForm";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [formError, setFormError] = useState("");
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
-  const navigate = useNavigate();
+  const initialFormState = { email: "", password: "" };
 
-  const validateForm = () => {
-    const newErrors = { email: "", password: "" };
-    let isValid = true;
-
-    if (!email.trim()) {
-      newErrors.email = "O email é obrigatório";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Email inválido";
-      isValid = false;
-    }
-
-    if (!password.trim()) {
-      newErrors.password = "A senha é obrigatória";
-      isValid = false;
-    } else if (password.length < 6) {
-      newErrors.password = "Senha deve ter pelo menos 6 caracteres";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+  const validators = {
+    email: (value) => {
+      if (!value.trim()) return "Email is required";
+      if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email format";
+      return "";
+    },
+    password: (value) => {
+      if (!value.trim()) return "Password is required";
+      if (value.length < 8) return "Password must be at least 8 characters";
+      return "";
+    },
   };
+
+  const {
+    formData: { email, password },
+    errors,
+    formError,
+    setFormError,
+    handleChange,
+    validateForm,
+  } = UseForm(initialFormState, validators);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      setFormError("Preencha todos os campos corretamente.");
+    if (!(await validateForm())) {
+      setFormError("Please fill all required fields correctly");
       return;
     }
 
@@ -51,28 +42,18 @@ const Login = () => {
       navigate("/home");
     } catch (error) {
       console.error("Authentication failed:", error);
-      setFormError(error.response?.data?.message || "Erro na autenticação");
+      setFormError(error.response?.data?.message || "Authentication failed");
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "email") setEmail(value);
-    if (name === "password") setPassword(value);
-
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-    if (formError) setFormError("");
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen flex items-center justify-center  p-4">
       <form
         onSubmit={handleSubmit}
         className="max-w-md w-full p-6 bg-white rounded-lg shadow-md"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-1 text-center">
-          Login
+          Welcome Back
         </h2>
         <div className="min-h-[50px] mb-1">
           <ErrorMessage message={formError} />
@@ -86,7 +67,7 @@ const Login = () => {
               name="email"
               placeholder="Email"
               value={email}
-              onChange={handleInputChange}
+              onChange={handleChange}
               className={`w-full px-3 py-2 border ${
                 errors.email ? "border-red-500" : "border-gray-300"
               } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -97,14 +78,14 @@ const Login = () => {
           </div>
           <div className="relative pb-1">
             <label className="block text-gray-700 text-sm font-bold mb-1">
-              Senha:
+              Password:
             </label>
             <input
               type="password"
               name="password"
-              placeholder="Senha"
+              placeholder="Password"
               value={password}
-              onChange={handleInputChange}
+              onChange={handleChange}
               className={`w-full px-3 py-2 border ${
                 errors.password ? "border-red-500" : "border-gray-300"
               } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -116,19 +97,19 @@ const Login = () => {
           <div className="pt-1">
             <button
               type="submit"
-              className="w-full mt-2 bg-p-green hover:bg-s-green text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+              className="w-full mt-2 bg-p-orange hover:bg-s-green text-white font-bold py-2 px-4 rounded-md transition duration-200 hover:bg-s-orange"
             >
               Login
             </button>
           </div>
           <div className="text-center pt-1">
-            <p className="text-gray-600 text-sm">
-              Não tem uma conta?{" "}
+            <p className="text-text-color text-sm">
+              Don't have an account?{" "}
               <Link
                 to="/register"
-                className="text-p-green hover:text-s-green font-bold"
+                className="text-p-orange hover:text-s-orange font-bold"
               >
-                Registre-se
+                Register
               </Link>
             </p>
           </div>

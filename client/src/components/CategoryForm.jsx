@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import ErrorMessage from "./ErrorMessage";
-
 import { CategoryService } from "../services/CategoryService";
+import UseForm from "../hooks/UseForm";
 
 const CategoryForm = ({
   category = null,
@@ -11,13 +11,52 @@ const CategoryForm = ({
   onCategoryUpdated,
   onClose,
 }) => {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     name: "",
     color: "#3b82f6",
     user: user.user_id,
-  });
-  const [errors, setErrors] = useState({ name: "" });
-  const [formError, setFormError] = useState("");
+  };
+
+  const validators = {
+    name: async (value) => {
+      if (!value.trim()) return "Name is required";
+
+      try {
+        const response = await CategoryService.fetchCategoryByName(
+          user.user_id,
+          value
+        );
+        const existing = response;
+
+        if (!isEdit && existing.length > 0) {
+          return "Category with this name already exists.";
+        }
+        if (
+          isEdit &&
+          existing.length > 0 &&
+          existing.some((cat) => cat.category_id !== category.category_id)
+        ) {
+          return "Category with this name already exists.";
+        }
+      } catch (error) {
+        console.error(error);
+        return "Error checking category name availability";
+      }
+
+      return "";
+    },
+  };
+
+  const {
+    formData,
+    setFormData,
+    errors,
+    formError,
+    setFormError,
+    handleChange,
+    validateForm,
+    isValidating,
+  } = UseForm(initialFormState, validators);
 
   useEffect(() => {
     if (isEdit && category) {
@@ -27,63 +66,16 @@ const CategoryForm = ({
         user: category.user_id,
       });
     }
-  }, [isEdit, category]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-    if (formError) setFormError("");
-  };
-
-  const validateForm = () => {
-    const newErrors = { name: "" };
-    let isValid = true;
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
+  }, [isEdit, category, setFormData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      setFormError("Please fill out all fields correctly.");
+    if (!(await validateForm())) {
+      setFormError("Please complete all required fields");
       return;
     }
 
     try {
-      const response = await CategoryService.fetchCategoryByName(
-        user.user_id,
-        formData.name
-      );
-      const existing = response;
-
-      if (!isEdit && existing.length > 0) {
-        setErrors((prev) => ({
-          ...prev,
-          name: "Category with this name already exists.",
-        }));
-        return;
-      }
-      if (
-        isEdit &&
-        existing.length > 0 &&
-        existing.some((cat) => cat.category_id !== category.category_id)
-      ) {
-        setErrors((prev) => ({
-          ...prev,
-          name: "Category with this name already exists.",
-        }));
-        return;
-      }
-
       if (isEdit) {
         const updatedCategory = await CategoryService.updateCategory(
           category.category_id,
@@ -93,9 +85,7 @@ const CategoryForm = ({
           }
         );
 
-        if (onCategoryUpdated) {
-          onCategoryUpdated(updatedCategory);
-        }
+        if (onCategoryUpdated) onCategoryUpdated(updatedCategory);
       } else {
         const newCategory = await CategoryService.createCategory({
           name: formData.name,
@@ -103,11 +93,10 @@ const CategoryForm = ({
           user: formData.user,
         });
 
-        setFormData({ name: "", color: "#3b82f6", user: user.user_id });
+        setFormData(initialFormState);
         if (onCategoryAdded) onCategoryAdded(newCategory);
       }
 
-      setErrors({ name: "" });
       setFormError("");
       if (onClose) onClose();
     } catch (error) {
@@ -192,11 +181,12 @@ const CategoryForm = ({
       </div>
       <button
         type="submit"
+        disabled={isValidating}
         className={`w-full mt-4 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
           isEdit
             ? "bg-blue-500 hover:bg-blue-600"
-            : "bg-p-green hover:bg-s-green"
-        }`}
+            : "bg-p-orange hover:bg-s-orange"
+        } ${isValidating ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         {isEdit ? "Save" : "Create"}
       </button>

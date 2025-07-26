@@ -1,26 +1,46 @@
 import { useState, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
-
 import { CategoryService } from "../services/CategoryService";
 import { TransactionService } from "../services/TransactionService";
 import ErrorMessage from "./ErrorMessage";
+import UseForm from "../hooks/UseForm";
 
 const TransactionForm = ({ onTransactionAdded, user }) => {
-  const [transaction, setTransaction] = useState({
+  const initialFormState = {
     amount: 0,
     description: "",
     category: 0,
     user: user.user_id,
     type: 0,
-  });
+  };
+
+  const validators = {
+    amount: (value) => {
+      if (!value) return "Amount is required";
+      if (value <= 0) return "Value must be greater than zero";
+      return "";
+    },
+    description: (value) => {
+      if (!value.trim()) return "Description is required";
+      return "";
+    },
+    category: (value) => {
+      if (!value || value === 0) return "Category is required";
+      return "";
+    },
+  };
+
+  const {
+    formData: transaction,
+    errors,
+    formError,
+    setFormError,
+    handleChange,
+    validateForm,
+    setFormData,
+  } = UseForm(initialFormState, validators);
+
   const [categories, setCategories] = useState([]);
-  const [errors, setErrors] = useState({
-    amount: "",
-    description: "",
-    category: "",
-    type: "",
-  });
-  const [formError, setFormError] = useState("");
 
   const loadCategories = async () => {
     try {
@@ -38,80 +58,26 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
     loadCategories();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTransaction((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-    if (formError) setFormError("");
-  };
-
   const handleCategoryChange = (value) => {
-    setTransaction((prev) => ({ ...prev, category: value }));
-    if (errors.category) {
-      setErrors((prev) => ({ ...prev, category: "" }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {
-      amount: "",
-      description: "",
-      category: "",
-      type: "",
-    };
-    let isValid = true;
-
-    if (transaction.amount <= 0) {
-      newErrors.amount = "Value must be greater than zero";
-      isValid = false;
-    }
-
-    if (!transaction.description.trim()) {
-      newErrors.description = "Description is required";
-      isValid = false;
-    }
-
-    if (transaction.category === 0) {
-      newErrors.category = "Select a category";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+    setFormData((prev) => ({ ...prev, category: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      setFormError("Fill out all fields correctly.");
+    if (!(await validateForm())) {
+      setFormError("Please complete all required fields");
       return;
     }
 
     try {
       await TransactionService.createTransaction(transaction);
-      setTransaction({
-        amount: 0,
-        description: "",
-        category: 0,
-        type: 0,
-        user: user.user_id,
-      });
-      setErrors({
-        amount: "",
-        description: "",
-        category: "",
-        type: "",
-      });
+      setFormData(initialFormState);
       setFormError("");
       onTransactionAdded();
     } catch (error) {
       setFormError("Error creating transaction. Try again.");
     }
   };
-
   return (
     <div className="relative">
       <form
@@ -266,7 +232,7 @@ const TransactionForm = ({ onTransactionAdded, user }) => {
               className={`flex-1 ${
                 categories.length === 0
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-p-green hover:bg-s-green"
+                  : "bg-p-orange hover:bg-s-orange"
               } text-white font-medium py-2 px-4 rounded-md transition`}
             >
               Create

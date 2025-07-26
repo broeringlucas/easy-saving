@@ -5,7 +5,7 @@ const CategoryCard = ({ category, onDelete, onEdit }) => {
 
   return (
     <div
-      className="relative grid grid-cols-4 gap-4 p-6 bg-white rounded-lg shadow-md w-full hover:bg-gray-100 transition-all group mb-3 border-l-[6px] h-25 items-center"
+      className="relative grid grid-cols-4 gap-4 p-6 bg-white rounded-lg shadow-md w-full hover:bg-gray-200 transition-all group mb-3 border-l-[6px] h-25 items-center"
       style={{ borderLeftColor: category.color }}
     >
       <p

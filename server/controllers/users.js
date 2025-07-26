@@ -73,6 +73,8 @@ const user = async (req, res) => {
     user_id: user.user_id,
     name: user.name,
     email: user.email,
+    phone: user.phone,
+    birthday: user.birthday,
   });
 };
 
@@ -81,13 +83,4 @@ const logout = (req, res) => {
   return res.status(200).send({ message: "Logout successful" });
 };
 
-const getAll = async (req, res) => {
-  try {
-    const users = await db.findAll();
-    return res.status(200).send(users);
-  } catch (error) {
-    return res.status(500).send({ message: error.message });
-  }
-};
-
-module.exports = { register, login, user, logout, getAll };
+module.exports = { register, login, user, logout };

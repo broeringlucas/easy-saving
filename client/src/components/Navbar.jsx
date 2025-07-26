@@ -51,18 +51,18 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center p-3 bg-p-green shadow-md">
+      <nav className="flex items-center p-4 bg-p-orange shadow-md">
         <div className="flex w-full relative">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="ml-5 p-2 hover:bg-s-green rounded-lg transition-colors"
+            className="ml-5 p-2 hover:bg-s-orange rounded-lg transition-colors"
           >
             <FiMenu className="text-white w-6 h-6" />
           </button>
           <div className="ml-auto">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center justify-between px-4 py-2 rounded hover:bg-s-green ml-auto mr-5 shadow-md w-32 text-white"
+              className="flex items-center justify-between px-4 py-2 rounded hover:bg-s-orange ml-auto mr-5 shadow-md w-32 text-white"
             >
               <span className="mr-2">{user?.name.split(" ")[0]}</span>
               <svg
@@ -105,29 +105,42 @@ export default function Navbar() {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 bg-p-green shadow-md">
+        <div className="flex justify-between items-center p-4 bg-p-orange shadow-md">
           <h2 className="ml-2 text-[24px] text-white">Menu</h2>
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="p-1 hover:bg-s-green rounded-lg"
+            className="p-1 hover:bg-s-orange rounded-lg"
           >
             <FiX className="w-6 h-6 text-white" />
           </button>
         </div>
-        <nav className="mt-4">
-          {navigationOptions.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => {
-                navigate(item.path);
-                setIsSidebarOpen(false);
-              }}
-              className="w-full flex items-center px-6 py-4 hover:bg-gray-100 text-gray-700 transition-colors"
-            >
-              {item.icon}
-              <span className="text-lg">{item.name}</span>
-            </button>
-          ))}
+        <nav className="mt-4 flex flex-col h-[calc(100%-68px)]">
+          <div className="flex-1">
+            {navigationOptions.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => {
+                  navigate(item.path);
+                  setIsSidebarOpen(false);
+                }}
+                className="w-full flex items-center px-6 py-4 hover:bg-gray-100 text-gray-700 transition-colors"
+              >
+                {item.icon}
+                <span className="text-lg">{item.name}</span>
+              </button>
+            ))}
+          </div>
+          {/* Botão de Quit no final com margem inferior */}
+          <button
+            onClick={() => {
+              logout();
+              setIsSidebarOpen(false);
+            }}
+            className="w-full flex items-center px-6 py-4 hover:bg-gray-100 text-gray-700 transition-colors mb-5"
+          >
+            <FiLogOut className="mr-3" />
+            <span className="text-lg">Quit</span>
+          </button>
         </nav>
       </div>
       {isSidebarOpen && (

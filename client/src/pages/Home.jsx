@@ -64,8 +64,8 @@ const Home = () => {
   return (
     <div className="mt-10 px-6 lg:px-10">
       <IntervalSelect value={selectedPeriod} onChange={setSelectedPeriod} />
-      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-green">
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10 ">
+        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-green bg-white">
           <p className="text-base sm:text-lg font-semibold mb-1">Income</p>
           <p className="text-2xl sm:text-3xl font-bold text-p-green">
             {incomeTotal > 0
@@ -73,7 +73,7 @@ const Home = () => {
               : incomeTotal.toFixed(2)}
           </p>
         </div>
-        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-red">
+        <div className="flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 border-p-red bg-white">
           <p className="text-base sm:text-lg font-semibold mb-1">Expense</p>
           <p className="text-2xl sm:text-3xl font-bold text-p-red">
             {expenseTotal > 0
@@ -82,7 +82,7 @@ const Home = () => {
           </p>
         </div>
         <div
-          className={`flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 ${
+          className={`flex-1 min-w-[250px] max-w-[400px] py-4 px-6 rounded-lg shadow-lg text-left border-l-4 bg-white ${
             balance > 0
               ? "border-p-green"
               : balance < 0
@@ -112,7 +112,7 @@ const Home = () => {
       <div className="flex justify-center gap-4 my-8">
         <button
           onClick={() => setShowTransactionForm(!showTransactionForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-orange text-white hover:bg-s-orange transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           New Transaction
@@ -120,7 +120,7 @@ const Home = () => {
 
         <button
           onClick={() => setShowCategoryForm(!showCategoryForm)}
-          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-green text-white hover:bg-s-green transition-colors duration-300"
+          className="flex items-center px-4 py-2 rounded-lg shadow-lg bg-p-orange text-white hover:bg-s-orange transition-colors duration-300"
         >
           <span className="mr-2 text-xl">+</span>
           New Category
@@ -151,15 +151,17 @@ const Home = () => {
       <div className="flex justify-center mt-10">
         <div className="w-full max-w-4xl px-4">
           {transactions.length > 0 && (
-            <div className="hidden md:flex mb-4 p-4 bg-gray-100 rounded-lg justify-between items-center">
-              <div className=" text-gray-500 font-semibold pr-4">Category</div>
-              <div className=" text-gray-500 font-semibold pr-4">
+            <div className="hidden md:flex mb-4 p-4 bg-white rounded-lg justify-between items-center">
+              <div className=" text-text-color font-semibold pr-4">
+                Category
+              </div>
+              <div className=" text-text-color font-semibold pr-4">
                 Description
               </div>
-              <div className=" text-gray-500 font-semibold text-right pr-4">
+              <div className=" text-text-color font-semibold text-right pr-4">
                 Value
               </div>
-              <div className=" text-gray-500 font-semibold text-right pr-4">
+              <div className=" text-text-color font-semibold text-right pr-4">
                 Date
               </div>
             </div>

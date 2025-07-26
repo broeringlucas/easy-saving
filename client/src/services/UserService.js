@@ -21,4 +21,8 @@ export const UserService = {
   logout: async () => {
     await api.post("/users/logout");
   },
+  updateUser: async (userData) => {
+    const response = await api.put("/users/user/update", userData);
+    return response.data;
+  },
 };

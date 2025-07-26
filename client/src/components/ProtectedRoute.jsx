@@ -1,6 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import { UserService } from "../services/UserService";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -22,11 +24,7 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
-        <div className="w-12 h-12 border-4 border-p-green border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!isAuthenticated) {
