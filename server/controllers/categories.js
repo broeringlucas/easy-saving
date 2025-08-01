@@ -76,7 +76,7 @@ const deleteCategory = async (req, res) => {
       await sequelize.query(
         `
         DELETE
-          FROM transactions
+          FROM tb_transactions
         WHERE category_id = :categoryId
         `,
         {
@@ -88,7 +88,7 @@ const deleteCategory = async (req, res) => {
       await sequelize.query(
         `
         DELETE
-          FROM categories
+          FROM tb_categories
         WHERE category_id = :categoryId
         `,
         {
@@ -134,7 +134,7 @@ const getTotalSpentByCategory = async (req, res) => {
         c.color,
         COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
         COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
-      FROM categories c
+      FROM tb_categories c
       LEFT JOIN tb_transactions t 
         ON c.category_id = t.category_id
         ${whereClause}

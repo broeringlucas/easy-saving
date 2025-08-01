@@ -60,7 +60,7 @@ const getTransactionsByUser = async (req, res) => {
         c.name as category_name,
         c.color as category_color
       FROM tb_transactions t
-      LEFT JOIN categories c ON t.category_id = c.category_id
+      LEFT JOIN tb_categories c ON t.category_id = c.category_id
       ${whereClause}
       ORDER BY t.date DESC
       `,
