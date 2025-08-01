@@ -44,6 +44,6 @@ app.listen(process.env.PORT, () => {
 
 // Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
 
-// db.sync({ force: true }).then(() => {
-//   console.log("Database synced");
-// });
+db.sync({ force: true }).then(() => {
+  console.log("Database synced");
+});
