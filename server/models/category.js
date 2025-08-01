@@ -3,7 +3,7 @@ const Sequelize = require("sequelize");
 const User = require("./user");
 const db = require("../config/db");
 
-const Category = db.define("category", {
+const Category = db.define("tb_category", {
   category_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,

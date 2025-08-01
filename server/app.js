@@ -21,14 +21,9 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-// routes
 app.use("/users", users);
 app.use("/transactions", transactions);
 app.use("/categories", categories);
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

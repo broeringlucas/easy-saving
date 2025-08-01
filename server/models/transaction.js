@@ -5,7 +5,7 @@ const User = require("./user");
 const Category = require("./category.js");
 
 const Transaction = db.define(
-  "transaction",
+  "tb_transaction",
   {
     transaction_id: {
       type: Sequelize.INTEGER,
