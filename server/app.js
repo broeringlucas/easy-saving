@@ -17,6 +17,10 @@ const corsOptions = {
   credentials: true,
 };
 
+app.get("/", (req, res) => {
+  res.send("Easy Saving API is running!");
+});
+
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -31,6 +35,6 @@ app.listen(port, () => {
 
 // Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
 
-db.sync({ force: true }).then(() => {
-  console.log("Database synced");
-});
+// db.sync({ force: true }).then(() => {
+//   console.log("Database synced");
+// });
