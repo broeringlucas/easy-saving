@@ -57,7 +57,9 @@ const login = async (req, res) => {
       httpOnly: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
+      domain: ".onrender.com",
       secure: true,
+      partitioned: true,
     });
 
     return res.status(200).send({ message: "Login successful" });
