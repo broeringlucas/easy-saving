@@ -135,7 +135,7 @@ const getTotalSpentByCategory = async (req, res) => {
         COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
         COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
       FROM categories c
-      LEFT JOIN transactions t 
+      LEFT JOIN tb_transactions t 
         ON c.category_id = t.category_id
         ${whereClause}
       WHERE c.user_id = :user_id

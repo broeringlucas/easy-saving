@@ -59,7 +59,7 @@ const getTransactionsByUser = async (req, res) => {
         c.category_id as category_id,
         c.name as category_name,
         c.color as category_color
-      FROM transactions t
+      FROM tb_transactions t
       LEFT JOIN categories c ON t.category_id = c.category_id
       ${whereClause}
       ORDER BY t.date DESC
@@ -99,7 +99,7 @@ const getMonthlySummary = async (req, res) => {
         to_char(t.date, 'YYYY-MM') AS month,
         COALESCE(SUM(CASE WHEN t.type = 0 THEN t.amount ELSE 0 END), 0) AS total_expense,
         COALESCE(SUM(CASE WHEN t.type = 1 THEN t.amount ELSE 0 END), 0) AS total_income
-      FROM transactions t
+      FROM tb_transactions t
       ${whereClause}
       GROUP BY to_char(t.date, 'YYYY-MM')
       ORDER BY month DESC
