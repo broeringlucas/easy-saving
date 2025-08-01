@@ -6,33 +6,45 @@ const users = require("./routes/users");
 const transactions = require("./routes/transactions");
 const categories = require("./routes/categories");
 
-const cors = require("cors");
-require("dotenv").config();
-
-const port = process.env.PORT;
-const app = express();
-
+// Configuração CORS robusta
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: [
+    process.env.CLIENT_URL, // Frontend na Vercel
+    "http://localhost:3000", // Dev
+  ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["set-cookie"],
 };
 
-app.get("/", (req, res) => {
-  res.send("Easy Saving API is running!");
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
 });
 
 app.use(express.json());
-app.use(cors(corsOptions));
 app.use(cookieParser());
+
+app.get("/", (req, res) => {
+  res.send("API is running!");
+});
+
+const users = require("./routes/users");
+const transactions = require("./routes/transactions");
+const categories = require("./routes/categories");
 
 app.use("/users", users);
 app.use("/transactions", transactions);
 app.use("/categories", categories);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.options("*", cors(corsOptions));
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
 
 // Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
