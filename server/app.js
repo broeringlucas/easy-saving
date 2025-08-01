@@ -6,12 +6,11 @@ const users = require("./routes/users");
 const transactions = require("./routes/transactions");
 const categories = require("./routes/categories");
 
-// Configuração CORS robusta
+const app = express();
+const cors = require("cors");
+
 const corsOptions = {
-  origin: [
-    process.env.CLIENT_URL, // Frontend na Vercel
-    "http://localhost:3000", // Dev
-  ],
+  origin: [process.env.CLIENT_URL],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
