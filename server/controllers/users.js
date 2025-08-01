@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 
-const jwtHelper = require("../utils/JwtHelper.js");
 const db = require("../models/user.js");
+const jwtHelper = require("../utils/JwtHelper");
 require("dotenv").config();
 
 const register = async (req, res) => {
