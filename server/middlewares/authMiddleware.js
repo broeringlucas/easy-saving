@@ -1,4 +1,4 @@
-const jwtHelper = require("../utils/JwtHelper");
+const jwtHelper = require("../utils/jwtHelper");
 
 const AuthMiddleware = (req, res, next) => {
   const token = req.cookies.token;

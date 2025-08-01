@@ -8,14 +8,13 @@ const {
   getTotalSpentByCategory,
   getCategoryByName,
 } = require("../controllers/categories");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-const AuthMiddleware = require("../middlewares/AuthMiddleware");
-
-router.get("/user/:user_id", AuthMiddleware, getCategoriesByUser);
-router.get("/user/:user_id/total", AuthMiddleware, getTotalSpentByCategory);
-router.get("/user/:user_id/name/:name", AuthMiddleware, getCategoryByName);
-router.post("/", AuthMiddleware, createCategory);
-router.put("/:id", AuthMiddleware, updateCategory);
-router.delete("/:id", AuthMiddleware, deleteCategory);
+router.get("/user/:user_id", authMiddleware, getCategoriesByUser);
+router.get("/user/:user_id/total", authMiddleware, getTotalSpentByCategory);
+router.get("/user/:user_id/name/:name", authMiddleware, getCategoryByName);
+router.post("/", authMiddleware, createCategory);
+router.put("/:id", authMiddleware, updateCategory);
+router.delete("/:id", authMiddleware, deleteCategory);
 
 module.exports = router;
