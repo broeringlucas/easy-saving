@@ -7,9 +7,11 @@ const {
   getMonthlySummary,
 } = require("../controllers/transactions");
 
-router.get("/user/:user_id", getTransactionsByUser);
-router.get("/summary/monthly/:user_id", getMonthlySummary);
-router.post("/", createTransaction);
-router.delete("/:id", deleteTransaction);
+const AuthMiddleware = require("../middlewares/AuthMiddleware");
+
+router.get("/user/:user_id", AuthMiddleware, getTransactionsByUser);
+router.get("/summary/monthly/:user_id", AuthMiddleware, getMonthlySummary);
+router.post("/", AuthMiddleware, createTransaction);
+router.delete("/:id", AuthMiddleware, deleteTransaction);
 
 module.exports = router;

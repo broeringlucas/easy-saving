@@ -1,6 +1,6 @@
 const jwtHelper = require("../utils/JwtHelper");
 
-const authMiddleware = (req, res, next) => {
+const AuthMiddleware = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -19,4 +19,4 @@ const authMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = authMiddleware;
+module.exports = AuthMiddleware;
