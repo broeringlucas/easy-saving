@@ -33,10 +33,6 @@ app.get("/", (req, res) => {
   res.send("API is running!");
 });
 
-const users = require("./routes/users");
-const transactions = require("./routes/transactions");
-const categories = require("./routes/categories");
-
 app.use("/users", users);
 app.use("/transactions", transactions);
 app.use("/categories", categories);
