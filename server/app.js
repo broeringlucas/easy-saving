@@ -14,16 +14,15 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  exposedHeaders: ["set-cookie"],
 };
 
 app.use(cors(corsOptions));
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
 
 app.use(express.json());
 app.use(cookieParser());
@@ -44,6 +43,6 @@ app.listen(process.env.PORT, () => {
 
 // Se quiser que o banco de dados seja sincronizado automaticamente com os models, descomente a linha abaixo
 
-db.sync({ force: true }).then(() => {
-  console.log("Database synced");
-});
+// db.sync({ force: true }).then(() => {
+//   console.log("Database synced");
+// });
