@@ -13,7 +13,7 @@ const port = process.env.PORT;
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:8080",
+  origin: process.env.CLIENT_URL,
   credentials: true,
 };
 
