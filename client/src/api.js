@@ -1,8 +1,7 @@
 import axios from "axios";
-require("dotenv").config();
 
 const api = axios.create({
-  baseURL: process.env.HOST || "http://localhost:3030",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3030",
   withCredentials: true,
 });
 
