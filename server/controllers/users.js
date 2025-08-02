@@ -56,7 +56,7 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       domain: process.env.SERVER_URL,
@@ -85,7 +85,7 @@ const logout = (req, res) => {
   res.clearCookie("token", {
     path: "/",
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
     domain: process.env.SERVER_URL,
   });
   return res.status(200).send({ message: "Logout successful" });
