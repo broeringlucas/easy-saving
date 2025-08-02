@@ -15,7 +15,6 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  exposedHeaders: ["set-cookie"],
 };
 
 app.use(cors(corsOptions));
@@ -23,13 +22,6 @@ app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Expose-Headers", "set-cookie");
-  next();
-});
 
 app.get("/", (req, res) => {
   res.send("API is running!");
