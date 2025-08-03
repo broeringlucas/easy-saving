@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const db = require("./config/db");
 
 const users = require("./routes/users");
 const transactions = require("./routes/transactions");
@@ -11,7 +10,7 @@ const categories = require("./routes/categories");
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: process.env.CLIENT_URL || "http://localhost:3030",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
