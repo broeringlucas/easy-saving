@@ -17,7 +17,10 @@ const register = async (req, res) => {
     });
 
     if (userEmail) {
-      return res.status(400).send({ message: "Invalid credentials" });
+      return res.status(400).send({
+        code: "EMAIL_ALREADY_EXISTS",
+        message: "Email already registered",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,7 +35,8 @@ const register = async (req, res) => {
 
     return res.status(201).send({ message: "User signed up successfully" });
   } catch (error) {
-    return res.status(500).send({ message: error.message });
+    console.error("Auth Error:", error);
+    return res.status(500).send({ message: "An unexpected error occurred" });
   }
 };
 
@@ -43,12 +47,16 @@ const login = async (req, res) => {
       where: { email: email },
     });
     if (!user) {
-      return res.status(404).send({ message: "Invalid credentials" });
+      return res
+        .status(404)
+        .send({ code: "INVALID_CREDENTIALS", message: "Invalid credentials" });
     }
 
     const passwordIsValid = bcrypt.compareSync(password, user.password);
     if (!passwordIsValid) {
-      return res.status(401).send({ message: "Invalid credentials" });
+      return res
+        .status(401)
+        .send({ code: "INVALID_CREDENTIALS", message: "Invalid credentials" });
     }
 
     const token = jwtHelper.generateToken({ id: user.user_id });
@@ -58,12 +66,13 @@ const login = async (req, res) => {
       secure: true,
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.SERVER_URL,
+      domain: process.env.SERVER_URL || undefined,
     });
 
     return res.status(200).send({ message: "Login successful" });
   } catch (error) {
-    return res.status(500).send({ message: error.message });
+    console.error("Auth Error:", error);
+    return res.status(500).send({ message: "An unexpected error occurred" });
   }
 };
 
@@ -85,7 +94,7 @@ const logout = (req, res) => {
     path: "/",
     secure: true,
     sameSite: "lax",
-    domain: process.env.SERVER_URL,
+    domain: process.env.SERVER_URL || undefined,
   });
   return res.status(200).send({ message: "Logout successful" });
 };

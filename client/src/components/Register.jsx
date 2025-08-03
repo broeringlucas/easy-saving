@@ -106,6 +106,7 @@ const Register = () => {
     setFormError,
     handleChange,
     validateForm,
+    setErrors,
   } = UseForm(initialFormState, validators, formatters);
 
   const navigate = useNavigate();
@@ -136,6 +137,13 @@ const Register = () => {
       setFormError("Registration successful! Please login to continue.");
     } catch (error) {
       console.error("Registration failed:", error);
+
+      if (error.response?.data?.code === "EMAIL_ALREADY_EXISTS") {
+        setErrors((prev) => ({
+          ...prev,
+          email: "Please use a different email.",
+        }));
+      }
       setFormError(
         error.response?.data?.message ||
           "Registration failed. Please try again later."

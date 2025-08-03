@@ -26,6 +26,7 @@ const Login = () => {
     setFormError,
     handleChange,
     validateForm,
+    setErrors,
   } = UseForm(initialFormState, validators);
 
   const navigate = useNavigate();
@@ -42,7 +43,13 @@ const Login = () => {
       navigate("/home");
     } catch (error) {
       console.error("Authentication failed:", error);
-      setFormError(error.response?.data?.message || "Authentication failed");
+      if (error.response?.data?.code === "INVALID_CREDENTIALS") {
+        setErrors({
+          email: " ",
+          password: " ",
+        });
+        setFormError(error.response?.data?.message || "Authentication failed");
+      }
     }
   };
 
