@@ -1,7 +1,6 @@
 # Easy Saving
 
-Easy Saving is a full-stack financial tracker I developed to deepen my expertise in building secure REST APIs, implementing JWT authentication flows,
-and creating responsive UIs with React. The system enables users to monitor spending patterns and savings goals through an intuitive interface backed by robust backend services.
+Easy Saving is a full-stack financial tracker I developed to deepen my expertise in building secure REST APIs, implementing JWT authentication flows, and creating responsive UIs with React. The system enables users to monitor spending patterns through an intuitive interface.
 
 ## Project Structure 
 
@@ -37,11 +36,11 @@ easy-saving/
 
 ## Features
 
-- **User Authentication**: JWT-based authentication with HTTP-only cookies for secure session management
-- **Expense Tracking**: Add, categorize, and analyze expenses
-- **Dashboard**: Visualize financial data with interactive charts (Chart.js)
-- **UI/UX**: Responsive Tailwind CSS components
-- **API Services**: Well-structured backend API with Express
+- **User Authentication :** JWT-based authentication with HTTP-only cookies for secure session management
+- **Expense Tracking:** Add, categorize, and analyze expenses
+- **Dashboard**:** Visualize financial data with interactive charts (Chart.js)
+- **UI/UX:** Responsive Tailwind CSS components
+- **API Services:** Well-structured backend API with Express
 
 ## Technologies Used
 
@@ -49,7 +48,7 @@ easy-saving/
 
 **Backend:** Node.js · Express · Sequelize 
 
-**Database:**  PostgreSQL  
+**Database:** PostgreSQL  
 
 ## How to run 
 
