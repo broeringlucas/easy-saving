@@ -36,9 +36,9 @@ easy-saving/
 
 ## Features
 
-- **User Authentication :** JWT-based authentication with HTTP-only cookies for secure session management
+- **User Authentication:** JWT-based authentication with HTTP-only cookies for secure session management
 - **Expense Tracking:** Add, categorize, and analyze expenses
-- **Dashboard**:** Visualize financial data with interactive charts (Chart.js)
+- **Dashboard**: Visualize financial data with interactive charts (Chart.js)
 - **UI/UX:** Responsive Tailwind CSS components
 - **API Services:** Well-structured backend API with Express
 
