@@ -71,6 +71,7 @@ easy-saving/
     JWT_EXPIRATION =
     JWT_SECRET =
     ```
+    
     </details>  
 7. Install backend dependencies: npm install
 8. Start backend:  npm run dev
