@@ -52,21 +52,58 @@ easy-saving/
 
 ## How to run 
 
+1. Clone the repository: git clone [https://github.com/broeringlucas/easy-saving.git](https://github.com/broeringlucas/easy-saving)
+2. Navigate to the client directory: cd client
+3. Install frontend dependencies: npm install
+4. Start frontend:  npm run dev
+5. Navigate to the server directory: cd server
+6. Create a .env file in server's directory
+    <details>
+    <summary>.env example</summary>
+    
+    ```
+    DB_HOST=
+    DB_USER=
+    DB_PASS=
+    DB_NAME=
+    DB_PORT=
+    PORT=
+    JWT_EXPIRATION =
+    JWT_SECRET =
+    ```
+    
+    </details>  
+7. Install backend dependencies: npm install
+8. Start backend:  npm run dev
 
 ## Deployment
 
+The application is deployed and accessible at: [https://easy-saving.lucasbroering.dev](https://easy-saving.lucasbroering.dev)
 
 ## Screenshots 
 <details>
 <summary>Screenshot 1</summary>
-
+    
+![s1](https://github.com/user-attachments/assets/a66def33-cf22-4d58-a1b4-318e5f325acb)
 </details>
 
 <details>
 <summary>Screenshot 2</summary>
-
+    
+![s2](https://github.com/user-attachments/assets/7f25870a-56a2-4c00-9a21-f8159d5d5407)
 
 </details>
 
+<details>
+<summary>Screenshot 3</summary>
+    
+![s3](https://github.com/user-attachments/assets/fdb12767-2064-412f-9baa-74d48577f732)
 
+</details>
 
+<details>
+<summary>Screenshot 4</summary>
+    
+![s4](https://github.com/user-attachments/assets/b26886ce-f5f1-43ee-8e1f-8e56e828757e)
+
+</details>
