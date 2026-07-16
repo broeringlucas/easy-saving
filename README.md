@@ -57,7 +57,7 @@ easy-saving/
 3. Install frontend dependencies: npm install
 4. Start frontend:  npm run dev
 5. Navigate to the server directory: cd server
-6. Create a .env file in server's directory
+6. Create a .env file in root
     <details>
     <summary>.env example</summary>
     
