@@ -20,7 +20,6 @@ services:
       - "127.0.0.1:5000:5000"
     volumes:
       - ./server:/usr/src/app
-      - /usr/src/app/node_modules
     working_dir: /usr/src/app
     environment:
       - DB_HOST=db
@@ -31,7 +30,7 @@ services:
       - PORT=${PORT}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION=${JWT_EXPIRATION}
-    command: ["sh", "-c", "npm install && npm run dev"]
+    command: ["sh", "-c", "npm install && node app.js"]
     depends_on:
       - db
 
@@ -40,13 +39,13 @@ services:
     container_name: easy-saving-client
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3001:5173"
+      - "127.0.0.1:3001:8080"
     volumes:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules
     working_dir: /usr/src/app
     environment:
-      - VITE_API_URL=http://localhost:5000
+      - VITE_API_URL=${VITE_API_URL}
     command: ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0"]
     depends_on:
       - server
